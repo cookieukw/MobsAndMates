@@ -1,23 +1,66 @@
-// intents/villager-ctions.js
+// intents/villager-actions.js
 export const villager_actions_intents = [
   {
     name: "minerar",
-    trainingPhrases: ["minerar", "cavar", "escavar", "vai minerar", "escavar chão"],
-    responses: ["Vou minerar!"]
+    trainingPhrases: [
+      "minerar",
+      "cavar",
+      "escavar",
+      "vai minerar",
+      "escavar chão",
+      "mine",
+      "dig",
+      "go mine",
+      "start mining",
+      "go dig some ores",
+      "buscar minério",
+      "pegar minério",
+    ],
+    responses: ["Vou minerar!"],
   },
   {
     name: "construir",
-    trainingPhrases: ["construir", "edificar", "build", "vai construir"],
-    responses: ["Vou construir!"]
+    trainingPhrases: [
+      "construir",
+      "edificar",
+      "build",
+      "vai construir",
+      "make a house",
+      "create a structure",
+      "build something",
+      "montar casa",
+      "erguer algo",
+    ],
+    responses: ["Vou construir!"],
   },
   {
     name: "caçar",
-    trainingPhrases: ["caçar", "hunting", "atacar mobs", "vai caçar"],
-    responses: ["Vou caçar!"]
+    trainingPhrases: [
+      "caçar",
+      "hunting",
+      "hunt",
+      "atacar mobs",
+      "vai caçar",
+      "go hunt",
+      "find food",
+      "kill mobs",
+      "pegar carne",
+    ],
+    responses: ["Vou caçar!"],
   },
   {
     name: "proteger_vila",
-    trainingPhrases: ["proteger vila", "defender", "guardar", "vai proteger a vila"],
-    responses: ["Vou proteger a vila!"]
+    trainingPhrases: [
+      "proteger vila",
+      "defender",
+      "guardar",
+      "vai proteger a vila",
+      "protect the village",
+      "defend village",
+      "keep safe",
+      "stand guard",
+      "protect people",
+    ],
+    responses: ["Vou proteger a vila!"],
   },
 ];

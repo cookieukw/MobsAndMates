@@ -2,20 +2,19 @@ import { world, system } from "@minecraft/server";
 import { classifyMessage } from "./classifier";
 import { villager_actions_intents } from "./intents/villager-actions";
 import { confirmation_intents } from "./intents/confirmation";
-import { cleanAndTokenize, levenshtein } from "./utils";
+import { cleanAndTokenize, levenshtein, randomFrom, similarity } from "./utils";
 
 const namedVillagers = new Map();
 const thresholdDistanceFactor = 0.25;
-const time = [Math.floor(1 - (1 / 3) * 2)];
-
-
+const time = 0;
+// Adicione esta linha no topo do seu script
+const conversationManager = new Map(); // Gerencia quem está falando com quem
 const actionTimes = {
   minerar: time,
   construir: time,
   caçar: time,
   proteger: time,
 };
-
 /* 
 const actionTimes = {
   minerar: [2, 5, 10],
@@ -48,16 +47,6 @@ function updateNamedVillagers() {
   }
 }
 
-function randomFrom(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-function similarity(a, b) {
-  const maxLen = Math.max(a.length, b.length);
-  if (maxLen === 0) return 1;
-  return 1 - levenshtein(a, b) / maxLen;
-}
-
 function getClosestVillager(msgTokens) {
   let best = { name: null, score: 0 };
 
@@ -73,7 +62,7 @@ function getClosestVillager(msgTokens) {
 function startAction(villagerData, action, player) {
   const entity = villagerData.entity;
   const actionName = action.intent;
-  const times = actionTimes[actionName] || [5];
+  const times = actionTimes[actionName] || [1];
   const chosenTime = randomFrom(times);
 
   const messages = [
@@ -119,57 +108,124 @@ function handleConfirmation(player, villagerData, msg) {
 system.runInterval(() => updateNamedVillagers(), 20 * 5);
 
 world.afterEvents.chatSend.subscribe((event) => {
-  const raw = event.message.trim();
-  const msg = raw.toLowerCase();
-  const player = event.sender;
+  const { message, sender: player } = event;
   if (namedVillagers.size === 0) return;
 
+  const raw = message.trim();
+  const msg = raw.toLowerCase();
   const tokens = cleanAndTokenize(msg);
-  const { name: closestName, score } = getClosestVillager(tokens);
 
-  // caso ele já esteja esperando instrução (sem precisar mencionar o nome)
-  let villager = null;
-  if (closestName && score >= 0.4) {
-    villager = namedVillagers.get(closestName);
-  } else {
-    villager = [...namedVillagers.values()].find(
-      (v) => v.waitingInstruction && !v.busy
+  let targetVillager = null;
+
+  // --- NOVO SISTEMA DE SELEÇÃO E TRAVA DE CONVERSA ---
+
+  // VERIFICA SE O JOGADOR JÁ ESTÁ EM UMA CONVERSA
+  const lockedVillagerId = conversationManager.get(player.id);
+
+  if (lockedVillagerId) {
+    // Se o jogador já está "travado" com um aldeão, esse é o alvo.
+    const villagerEntry = [...namedVillagers.values()].find(
+      (v) => v.entity.id === lockedVillagerId
     );
+    if (villagerEntry) {
+      targetVillager = villagerEntry;
+    } else {
+      // O aldeão travado não existe mais (morreu?), então libera a trava.
+      conversationManager.delete(player.id);
+    }
+  } else {
+    // Se não há trava, o jogador está iniciando uma NOVA conversa.
+    const nameMatch = getClosestVillager(tokens);
+
+    // REGRA DE NOME MAIS RÍGIDA
+    if (nameMatch.name && nameMatch.score >= 0.6) {
+      const potentialTarget = namedVillagers.get(nameMatch.name);
+
+      // VERIFICA SE O ALDEÃO JÁ ESTÁ EM CONVERSA COM OUTRO JOGADOR
+      let isLockedByOther = false;
+      for (const [playerId, villagerId] of conversationManager.entries()) {
+        if (
+          villagerId === potentialTarget.entity.id &&
+          playerId !== player.id
+        ) {
+          isLockedByOther = true;
+          break;
+        }
+      }
+
+      if (isLockedByOther) {
+        player.sendMessage(
+          `§c${potentialTarget.entity.nameTag} está ocupado conversando com outro jogador.§r`
+        );
+        return; // Impede a interação
+      }
+
+      targetVillager = potentialTarget;
+    }
   }
 
-  if (!villager || villager.busy) return;
+  // Se nenhum alvo foi determinado, ignora a mensagem.
+  if (!targetVillager || targetVillager.busy) return;
 
-  const entity = villager.entity;
+  // --- FIM DO NOVO SISTEMA ---
+
+  const entity = targetVillager.entity;
   const formattedName =
     entity.nameTag.charAt(0).toUpperCase() +
     entity.nameTag.slice(1).toLowerCase();
 
-  // confirmação
-  if (villager.pendingAction) {
-    handleConfirmation(player, villager, msg);
+  // Lógica de confirmação (sim/não)
+  if (targetVillager.pendingAction) {
+    // Após a confirmação, a conversa termina, então liberamos a trava.
+    conversationManager.delete(player.id);
+    handleConfirmation(player, targetVillager, msg);
     return;
   }
 
-  // classificar ação
+  // Classifica a mensagem para encontrar uma ação
   const action = classifyMessage(
     msg,
     villager_actions_intents,
     thresholdDistanceFactor
   );
-  console.log(
-    `[DEBUG] "${raw}" => ${formattedName} (${score.toFixed(2)}) -> ${
-      action.intent
-    } (${action.distance})`
-  );
 
+  //console.log(`[DEBUG] Player: ${player.name} | Target: ${formattedName} | Intent: ${action.intent || 'none'}`);
+  console.log(
+    `[DEBUG] Player: ${
+      player.name
+    } | Msg: "${raw}" | Target: ${formattedName} | Intent: ${
+      action.intent || "none"
+    }`
+  );
   if (action.status === "matched") {
-    startAction(villager, action, player);
+    // Ação bem-sucedida, a conversa termina. Liberamos a trava.
+    conversationManager.delete(player.id);
+    startAction(targetVillager, action, player);
   } else {
+    // Ação não entendida. O aldeão pede esclarecimento e TRAVA a conversa com este jogador.
+    conversationManager.set(player.id, targetVillager.entity.id);
     player.sendMessage(
       `<${formattedName}> O que exatamente você quer que eu faça?`
     );
-    villager.waitingInstruction = true; // agora ele vai ouvir o próximo comando direto
   }
 });
 
-console.log("[SYSTEM] IA de aldeões v3 carregada ✅");
+// ADICIONE ESTE BLOCO DE CÓDIGO NO SEU ARQUIVO
+/**
+ * Este evento é disparado sempre que um jogador sai do mundo.
+ * Ele é crucial para limpar qualquer "trava" de conversa que o jogador possa ter deixado para trás.
+ */
+world.afterEvents.playerLeave.subscribe((event) => {
+  const { playerId } = event;
+
+  // Verifica se o jogador que saiu estava em uma conversa
+  if (conversationManager.has(playerId)) {
+    // Se estava, removemos a trava para liberar o aldeão para outros jogadores.
+    conversationManager.delete(playerId);
+    console.warn(
+      `[CONVERSATION] Jogador ${playerId} saiu e liberou a trava de conversa.`
+    );
+  }
+});
+
+console.log("[SYSTEM] IA de aldeões v5 carregada ✅");

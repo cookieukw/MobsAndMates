@@ -25,3 +25,27 @@ export const levenshtein = (a, b) => {
   }
   return matrix[b.length][a.length];
 };
+
+/**
+ * Returns a random item from an array.
+ * @param {Array} arr The input array.
+ * @returns {*} A random element from the array.
+ */
+export function randomFrom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+
+/**
+ * Calculates a similarity score (0 to 1) between two strings.
+ * 1 means identical, 0 means completely different.
+ * It uses the Levenshtein distance as a basis.
+ */
+export function similarity(a, b) {
+  const maxLen = Math.max(a.length, b.length);
+  if (maxLen === 0) return 1; // If both strings are empty, they are 100% similar.
+  return 1 - levenshtein(a, b) / maxLen;
+}
+
+
+
