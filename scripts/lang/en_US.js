@@ -15,4 +15,6 @@ export default {
   villager_confirm_name: "<{0}> Are you talking to me?",
   villager_confirm_no: "<{0}> Oh, my mistake.",
   villager_confirm_timeout: "<{0}> Hmmm, I guess not.",
+  action_come_here_ack: "<{0}> I'm on my way!",
+  action_come_here_done: "<{0}> I'm here. What do you need?",
 };

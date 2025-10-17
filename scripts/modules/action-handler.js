@@ -7,9 +7,9 @@
 import {
   world,
   system,
-  ItemStack,
-  EntityComponentTypes,
-  EquipmentSlot,
+  //ItemStack,
+  //EntityComponentTypes,
+  //EquipmentSlot,
 } from "@minecraft/server";
 import { log, randomFrom } from "../utils";
 import {
@@ -113,7 +113,7 @@ export function startAction(villagerData, action, player) {
     `[Action] ${formattedName} is starting '${actionName}' for ${chosenTime} minutes.`
   );
 
-/*   // Phase 1: Preparation (equip tool)
+  /*   // Phase 1: Preparation (equip tool)
   if (details.tool) {
     try {
       const equippable = villagerData.entity.getComponent(
@@ -189,7 +189,7 @@ export function startAction(villagerData, action, player) {
           log(`[Action] ${formattedName} has returned, but found no loot.`);
         }
 
-     /*    // Clear equipment and finish
+        /*    // Clear equipment and finish
         try {
           const equippable = returningEntity.getComponent(
             EntityComponentTypes.Equippable
@@ -203,4 +203,55 @@ export function startAction(villagerData, action, player) {
       DEBUG ? 100 : chosenTime * 60 * 20
     ); // Use short time in debug mode
   }, 100); // 5 second prep time
+}
+
+/**
+ * Handles the "come here" action by teleporting the villager near the player.
+ * @param {object} villagerData The villager's state object.
+ * @param {import("@minecraft/server").Player} player The player to teleport to.
+ */
+export function handleComeHereAction(villagerData, player) {
+  const entity = villagerData.entity;
+  // Exit if the entity is invalid
+  if (!entity || !entity.isValid) return;
+
+  // Set the villager to busy to prevent other commands
+  villagerData.busy = true;
+
+  // Let the player know the command was understood
+  player.sendMessage(t(player, "action_come_here_ack", entity.nameTag));
+  log(`[Action] ${entity.nameTag} will teleport to ${player.name}.`);
+
+  // Use a short timeout to make the teleport feel less instant and more deliberate
+  system.runTimeout(() => {
+    try {
+      // Re-check if the entity and player are still valid after the delay
+      if (!entity.isValid || !player.isValid) {
+        villagerData.busy = false;
+        return;
+      }
+
+      // Find a safe spot 2 to 4 blocks away from the player
+      const safeLocation = findSafeLocation(
+        player.dimension,
+        player.location,
+        2,
+        4
+      );
+
+      // Teleport the villager to the safe location.
+      // If no safe spot is found, teleport to the player's exact location as a fallback.
+      entity.teleport(safeLocation || player.location);
+
+      // Let the player know the villager has arrived
+      player.sendMessage(t(player, "action_come_here_done", entity.nameTag));
+
+      // The action is complete, so set the villager to not busy
+      villagerData.busy = false;
+      log(`[Action] ${entity.nameTag} has successfully teleported.`);
+    } catch (e) {
+      villagerData.busy = false;
+      log(`[Action] Error during 'come_here' teleport: ${e}`);
+    }
+  }, 40); // 2-second delay (40 ticks)
 }
