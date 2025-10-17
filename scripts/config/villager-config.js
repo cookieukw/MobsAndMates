@@ -18,15 +18,14 @@ const medium_time = DEBUG ? [0.2] : [10, 15];
 const long_time = DEBUG ? [0.3] : [20, 30];
 
 export const actionTimes = {
-  minerar: medium_time,
-  construir: long_time,
-  caçar: short_time,
-  proteger: short_time,
+  mine: medium_time,
+  build: long_time,
+  hunt: short_time,
+  protect: short_time,
 };
-
 // --- Action Specifics (Tools & Loot) ---
 export const actionDetails = {
-  minerar: {
+  mine: {
     tool: "minecraft:iron_pickaxe",
     loot_table: [
       { item: "minecraft:coal", min_qty: 3, max_qty: 8, time_factor: 1 },
@@ -37,7 +36,7 @@ export const actionDetails = {
       { item: "minecraft:emerald", min_qty: 1, max_qty: 1, time_factor: 20 },
     ],
   },
-  caçar: {
+  hunt: {
     tool: "minecraft:iron_sword",
     loot_table: [
       { item: "minecraft:chicken", min_qty: 2, max_qty: 5, time_factor: 1 },
@@ -46,4 +45,5 @@ export const actionDetails = {
       { item: "minecraft:leather", min_qty: 1, max_qty: 4, time_factor: 2 },
     ],
   },
+  // Você pode adicionar 'build', 'protect', etc. aqui no futuro
 };
