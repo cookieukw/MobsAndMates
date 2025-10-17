@@ -1,9 +1,97 @@
-export const cleanAndTokenize = (text) =>
-  text
+// utils.js
+
+/**
+ * @file Contains generic utility functions used throughout the addon.
+ */
+
+import { world } from "@minecraft/server";
+import { isWarn } from "./config/villager-config";
+
+/**
+ * Custom logger. Sends a message to a player if provided, otherwise logs to console.
+ * @param {string} message The message to log.
+ * @param {import("@minecraft/server").Player} [player] The player to send the message to.
+ */
+export function log(message, player) {
+  if (isWarn) {
+    if (player) {
+      player.sendMessage(message);
+    } else {
+      console.warn(message);
+    }
+  }
+}
+
+/**
+ * Cleans and tokenizes a string.
+ * @param {string} message The input string.
+ * @returns {string[]} An array of words.
+ */
+export function cleanAndTokenize(message) {
+  return message
     .toLowerCase()
-    .replace(/[^\w\s]/g, "")
-    .split(" ")
+    .replace(/[^a-z0-9\s]/g, "")
+    .split(/\s+/)
     .filter(Boolean);
+}
+
+/**
+ * Calculates a similarity score between two strings (0 to 1).
+ * @param {string} a First string.
+ * @param {string} b Second string.
+ * @returns {number} Similarity score.
+ */
+export function similarity(a, b) {
+  // Levenshtein distance calculation
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) {
+    matrix[i] = [i];
+  }
+  for (let j = 0; j <= a.length; j++) {
+    matrix[0][j] = j;
+  }
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1,
+          Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)
+        );
+      }
+    }
+  }
+  const distance = matrix[b.length][a.length];
+  const maxLen = Math.max(a.length, b.length);
+  if (maxLen === 0) return 1;
+  return 1 - distance / maxLen;
+}
+
+/**
+ * Returns a random item from an array.
+ * @param {Array<T>} arr The input array.
+ * @returns {T} A random element from the array.
+ */
+export function randomFrom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+/**
+ * Ensures a ticking area exists where entities can wait without being unloaded.
+ * @param {import("@minecraft/server").World} world
+ */
+export function ensureWaitingBoxTickingArea(world) {
+  try {
+    world
+      .getDimension("overworld")
+      .runCommand(`tickingarea add 0 319 0 0 319 0 waiting_box true`);
+    log("[System] Waiting Box ticking area ensured.");
+  } catch (e) {
+    log("[System] Ticking area 'waiting_box' might already exist.");
+  }
+}
+
 
 export const levenshtein = (a, b) => {
   if (a.length === 0) return b.length;
@@ -25,27 +113,3 @@ export const levenshtein = (a, b) => {
   }
   return matrix[b.length][a.length];
 };
-
-/**
- * Returns a random item from an array.
- * @param {Array} arr The input array.
- * @returns {*} A random element from the array.
- */
-export function randomFrom(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-
-/**
- * Calculates a similarity score (0 to 1) between two strings.
- * 1 means identical, 0 means completely different.
- * It uses the Levenshtein distance as a basis.
- */
-export function similarity(a, b) {
-  const maxLen = Math.max(a.length, b.length);
-  if (maxLen === 0) return 1; // If both strings are empty, they are 100% similar.
-  return 1 - levenshtein(a, b) / maxLen;
-}
-
-
-
