@@ -14,7 +14,11 @@ import {
   nameMatchThreshold,
 } from "../config/villager-config";
 import { getClosestEntity, getTrackedEntities } from "./entity-manager";
-import { startAction, handleComeHereAction } from "./action-handler";
+import {
+  startAction,
+  handleComeHereAction,
+  handleRaidAction,
+} from "./action-handler";
 import { t } from "./translator";
 
 const conversationManager = new Map(); // Tracks who is talking to whom {playerId: entityId}
@@ -199,17 +203,17 @@ function onChatSend(event) {
       case "build":
         player.sendMessage("debug para construir");
         break;
-      case "mine":
-        player.sendMessage("debug para construir"); // Default case for long-running tasks like mining, hunting, etc.
-        startAction(targetEntityData, action, player);
-        break;
-      case "hunt":
-        player.sendMessage("debug para construir"); // Default case for long-running tasks like mining, hunting, etc.
-        startAction(targetEntityData, action, player);
+
+      case "raid":
+        // Special case for the placeholder raid/defend action.
+        handleRaidAction(targetEntityData, player);
         break;
 
-      default:
+      /* default:
         player.sendMessage("debug para outras ações");
+        break; */
+      default:
+        startAction(targetEntityData, action, player);
         break;
     }
   } else {
