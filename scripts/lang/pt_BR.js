@@ -16,4 +16,20 @@ export default {
   villager_confirm_timeout: "<{0}> Hmmm, acho que não.",
   action_come_here_ack: "<{0}> Estou a caminho!",
   action_come_here_done: "<{0}> Cheguei. O que precisa?",
+  explore_report_intro: "<{0}> Minha exploração terminou! Eu encontrei:",
+  explore_report_single: " uma {0}.",
+  explore_report_multiple: " uma {0} e um {1}.",
+  explore_report_fail:
+    "<{0}> Eu explorei por um bom tempo mas não encontrei nada interessante.",
+  structure_village: "Vila",
+  structure_pillager_outpost: "Posto de Saqueadores",
+  structure_desert_pyramid: "Pirâmide do Deserto",
+  structure_jungle_temple: "Templo da Selva",
+  structure_ruined_portal: "Portal em Ruínas",
+  structure_shipwreck: "Naufrágio",
+  structure_mineshaft: "Mina Abandonada",
+  explore_report_location_success:
+    "<{0}> Eu encontrei um(a) {1}! Fica nas coordenadas: {2}",
+  explore_report_location_fail:
+    "<{0}> Eu explorei por um bom tempo mas não encontrei nenhuma estrutura nova por perto.",
 };

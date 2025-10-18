@@ -17,4 +17,20 @@ export default {
   villager_confirm_timeout: "<{0}> Hmmm, I guess not.",
   action_come_here_ack: "<{0}> I'm on my way!",
   action_come_here_done: "<{0}> I'm here. What do you need?",
+  explore_report_intro: "<{0}> My exploration is complete! I found:",
+  explore_report_single: " a {0}.",
+  explore_report_multiple: " a {0} and a {1}.",
+  explore_report_fail:
+    "<{0}> I explored for a long time but didn't find anything interesting.",
+  structure_village: "Village",
+  structure_pillager_outpost: "Pillager Outpost",
+  structure_desert_pyramid: "Desert Pyramid",
+  structure_jungle_temple: "Jungle Temple",
+  structure_ruined_portal: "Ruined Portal",
+  structure_shipwreck: "Shipwreck",
+  structure_mineshaft: "Mineshaft",
+  explore_report_location_success:
+    "<{0}> I found a {1}! It's located at coordinates: {2}",
+  explore_report_location_fail:
+    "<{0}> I explored for a long time but couldn't find any new structures nearby.",
 };
