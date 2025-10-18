@@ -7,6 +7,7 @@
 import {
   world,
   system,
+  EntityComponentTypes,
   //ItemStack,
   //EntityComponentTypes,
   //EquipmentSlot,
@@ -98,113 +99,126 @@ function findSafeLocation(dimension, startLocation, minDistance, maxDistance) {
  * @param {import("@minecraft/server").Player} player The player who initiated the action.
  */
 export function startAction(villagerData, action, player) {
-  if (!villagerData.entity || !villagerData.entity.isValid) return;
+    if (!villagerData.entity || !villagerData.entity.isValid) return;
 
-  const villagerId = villagerData.entity.id;
-  villagerData.busy = true;
+    const villagerId = villagerData.entity.id;
+    villagerData.busy = true;
 
-  const actionName = action.intent;
-  const details = actionDetails[actionName];
-  const chosenTime = randomFrom(actionTimes[actionName]);
-  const formattedName = villagerData.entity.nameTag;
+    const actionName = action.intent;
+    const details = actionDetails[actionName];
+    const chosenTime = randomFrom(actionTimes[actionName]);
+    const formattedName = villagerData.entity.nameTag;
 
-  player.sendMessage(t(player, "action_prepare", formattedName, actionName));
-  log(
-    `[Action] ${formattedName} is starting '${actionName}' for ${chosenTime} minutes.`
-  );
+    player.sendMessage(t(player, "action_prepare", formattedName, actionName));
+    log(`[Action] ${formattedName} is starting '${actionName}' for ${chosenTime} minutes.`);
 
-  /*   // Phase 1: Preparation (equip tool)
-  if (details.tool) {
-    try {
-      const equippable = villagerData.entity.getComponent(
-        EntityComponentTypes.Equippable
-      );
-      equippable.setEquipment(
-        EquipmentSlot.Mainhand,
-        new ItemStack(details.tool, 1)
-      );
-    } catch (e) {
-      log(`[Action] Could not equip tool on ${formattedName}.`);
-    }
-  } */
-
-  system.runTimeout(() => {
-    const entity = world.getEntity(villagerId);
-    if (!entity || !entity.isValid) {
-      villagerData.busy = false;
-      return;
-    }
-
-    // Phase 2: Working (teleport away and become invisible)
-    player.sendMessage(t(player, "action_start", formattedName, chosenTime));
-    entity.teleport(waitingBoxCoords);
-    entity.addEffect("invisibility", chosenTime * 60 * 20 + 100, {
-      showParticles: false,
-    });
-
-    system.runTimeout(
-      () => {
-        const returningEntity = world.getEntity(villagerId);
-        if (!returningEntity || !returningEntity.isValid) {
-          villagerData.busy = false;
-          return;
-        }
-
-        // Phase 3: Return and deliver loot
-        const loot = calculateLoot(actionName, chosenTime);
-        const spawnLocation = findSafeLocation(
-          player.dimension,
-          player.location,
-          5,
-          10
-        );
-
-        returningEntity.teleport(spawnLocation || player.location);
-        returningEntity.removeEffect("invisibility");
-
-        log(
-          `[Action] ${formattedName} has returned. Loot: ${JSON.stringify(
-            loot
-          )}`
-        );
-
-        if (loot.length > 0) {
-          // Caso de sucesso: envia a mensagem de sucesso e os itens.
-          player.sendMessage(
-            t(player, "action_return_success", formattedName, actionName)
-          );
-          log(
-            `[Action] ${formattedName} has returned. Loot: ${JSON.stringify(
-              loot
-            )}`
-          );
-          for (const reward of loot) {
-            player.dimension.runCommand(
-              `give "${player.name}" ${reward.item} ${reward.quantity}`
-            );
-          }
-        } else {
-          // Caso de falha: envia a mensagem de falha.
-          player.sendMessage(t(player, "action_return_fail", formattedName));
-          log(`[Action] ${formattedName} has returned, but found no loot.`);
-        }
-
-        /*    // Clear equipment and finish
+    if (details.tool) {
         try {
-          const equippable = returningEntity.getComponent(
-            EntityComponentTypes.Equippable
-          );
-          equippable.setEquipment(EquipmentSlot.Mainhand);
-        } catch (e) {}
- */
-        villagerData.busy = false;
-        log(`[Action] ${formattedName} has finished the task and is now free.`);
-      },
-      DEBUG ? 100 : chosenTime * 60 * 20
-    ); // Use short time in debug mode
-  }, 100); // 5 second prep time
+            const equippable = villagerData.entity.getComponent(EntityComponentTypes.Equippable);
+            equippable.setEquipment(EquipmentSlot.Mainhand, new ItemStack(details.tool, 1));
+        } catch (e) {
+            log(`[Action] Could not equip tool on ${formattedName}.`);
+        }
+    }
+
+    system.runTimeout(() => {
+        const entity = world.getEntity(villagerId);
+        if (!entity || !entity.isValid) {
+            villagerData.busy = false;
+            return;
+        }
+
+        player.sendMessage(t(player, "action_start", formattedName, chosenTime));
+        entity.teleport(waitingBoxCoords);
+        entity.addEffect("invisibility", (chosenTime * 60 * 20) + 100, { showParticles: false });
+
+     
+        system.runTimeout(async () => {
+            const returningEntity = world.getEntity(villagerId);
+            if (!returningEntity || !returningEntity.isValid) {
+                villagerData.busy = false;
+                return;
+            }
+            
+            const spawnLocation = findSafeLocation(player.dimension, player.location, 5, 10);
+            returningEntity.teleport(spawnLocation || player.location);
+            returningEntity.removeEffect("invisibility");
+
+          
+            if (details.reward_type === 'structure_location') {
+                
+                const structureToFind = randomFrom(details.loot_table);
+                log(`[Explore] ${formattedName} is searching for a ${structureToFind}.`);
+
+                try {
+                    const result = await player.dimension.runCommand(`locate structure ${structureToFind}`);
+                    
+                    if (result.successCount > 0) {
+                       
+                        const coordsMatch = result.statusMessage.match(/-?\d+/g);
+                        if (coordsMatch && coordsMatch.length >= 3) {
+                            const [x, y, z] = coordsMatch;
+                            const structureName = t(player, `structure_${structureToFind}`);
+                            const coordsString = `X: ${x}, Y: ${y}, Z: ${z}`;
+                            player.sendMessage(t(player, "explore_report_location_success", formattedName, structureName, coordsString));
+                        }
+                    } else {
+                        player.sendMessage(t(player, "explore_report_location_fail", formattedName));
+                    }
+                } catch (e) {
+                    player.sendMessage(t(player, "explore_report_location_fail", formattedName));
+                    log(`[Explore] /locate command failed: ${e}`);
+                }
+                
+            } else {
+           
+                const loot = calculateLoot(actionName, chosenTime);
+                if (loot.length > 0) {
+                    player.sendMessage(t(player, "action_return_success", formattedName, actionName));
+                    for (const reward of loot) {
+                        player.dimension.runCommand(`give "${player.name}" ${reward.item} ${reward.quantity}`);
+                    }
+                } else {
+                    player.sendMessage(t(player, "action_return_fail", formattedName));
+                }
+            }
+       
+            try {
+                const equippable = returningEntity.getComponent(EntityComponentTypes.Equippable);
+                equippable.setEquipment(EquipmentSlot.Mainhand, undefined);
+            } catch (e) {}
+
+            villagerData.busy = false;
+            log(`[Action] ${formattedName} has finished the task and is now free.`);
+        }, DEBUG ? 100 : chosenTime * 60 * 20);
+    }, 100);
 }
 
+/**
+ * Placeholder for the "raid" action. This is a complex, real-time combat event.
+ * @param {object} villagerData The villager's state object.
+ * @param {import("@minecraft/server").Player} player The player who initiated the action.
+ */
+export function handleRaidAction(villagerData, player) {
+  const entity = villagerData.entity;
+  if (!entity || !entity.isValid) return;
+
+  villagerData.busy = true;
+  player.sendMessage(
+    `<${entity.nameTag}> Okay, I will defend the area! (Raid logic not yet implemented)`
+  );
+  log(
+    `[Action] Raid action triggered for ${entity.nameTag}. This feature is a work in progress.`
+  );
+
+  // TODO: Implement raid logic here (e.g., spawn mobs, make villager fight).
+
+  // For now, just make the villager free again after a short time.
+  system.runTimeout(() => {
+    villagerData.busy = false;
+    player.sendMessage(`<${entity.nameTag}> The area is secure for now.`);
+  }, 200); // 10 seconds
+}
 /**
  * Handles the "come here" action by teleporting the villager near the player.
  * @param {object} villagerData The villager's state object.
