@@ -209,9 +209,6 @@ function onChatSend(event) {
         handleRaidAction(targetEntityData, player);
         break;
 
-      /* default:
-        player.sendMessage("debug para outras ações");
-        break; */
       default:
         startAction(targetEntityData, action, player);
         break;
@@ -230,7 +227,7 @@ function onPlayerLeave(event) {
   const { playerId, playerName } = event;
   if (conversationManager.has(playerId)) {
     conversationManager.delete(playerId);
-    log(t(undefined, "log_conversation_lock_release", playerName));
+    log(t(event.sender,"log_conversation_lock_release", playerName));
   }
 }
 
