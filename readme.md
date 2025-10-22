@@ -1,5 +1,5 @@
 
-# Mobs&Mates
+# Mobs&Mate
 
 A Minecraft Bedrock Scripting Addon that turns villagers into smart, command-driven companions. Talk to them naturally, assign jobs, and watch them act like real partners — mining, fishing, exploring, and more.
 
