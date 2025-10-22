@@ -5,7 +5,7 @@
  */
 
 import { world } from "@minecraft/server";
-import { isWarn } from "./config/villager-config";
+import { DEBUG, isWarn } from "./config/villager-config";
 
 /**
  * Custom logger. Sends a message to a player if provided, otherwise logs to console.
@@ -13,11 +13,15 @@ import { isWarn } from "./config/villager-config";
  * @param {import("@minecraft/server").Player} [player] The player to send the message to.
  */
 export function log(message, player) {
-  if (isWarn) {
-    if (player) {
-      player.sendMessage(message);
+  if (!DEBUG) return;
+
+  if (!isWarn) {
+    player.sendMessage(message);
+  } else {
+    if (typeof message === "object" && message !== null && message.rawtext) {
+      world.sendMessage(message);
     } else {
-      console.warn(message);
+      console.warn(String(message)); 
     }
   }
 }
@@ -91,7 +95,6 @@ export function ensureWaitingBoxTickingArea(world) {
     log("[System] Ticking area 'waiting_box' might already exist.");
   }
 }
-
 
 export const levenshtein = (a, b) => {
   if (a.length === 0) return b.length;
