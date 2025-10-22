@@ -1,47 +1,59 @@
 // modules/translator.js
+import { world } from "@minecraft/server";
+
+// This constant is no longer needed because the native 'translate'
+// key automatically uses the correct language for each client.
+// const FALLBACK_LANG = "pt_BR"; 
 
 /**
- * @file Manages language translations for player-facing text.
- */
-
-import en_US from "../lang/en_US";
-import pt_BR from "../lang/pt_BR";
-
-// The fallback language if a player's language is not supported or if no player is provided.
-const FALLBACK_LANG = "pt_BR";
-
-// Maps language codes from Minecraft to our imported JSON files.
-const translations = {
-  en_US,
-  pt_BR,'pt_PT': pt_BR
-};
-
-/**
- * Translates a given key. If a player is provided, it uses their language.
- * Otherwise, it uses the fallback language (ideal for console logs).
- * @param {import("@minecraft/server").Player | undefined} player The player object or undefined.
- * @param {string} key The translation key (e.g., "villager_unclear_intent").
- * @param {(string | number)[]} args An array of values to replace placeholders like {0}, {1}, etc.
- * @returns {string} The translated and formatted string.
+ * Builds a translation object for Minecraft's native rawtext system.
+ * This function *returns* the RawMessage object, it does not send it.
+ * This allows it to be used inside other functions like player.sendMessage() or log().
+ *
+ * @param {import("@minecraft/server").Player | undefined} player - (Ignored) This argument is kept
+ * for compatibility with existing calls (e.g., t(player, ...)), but
+ * the 'translate' key works client-side, so the player object isn't needed here.
+ * @param {string} key - The translation key (e.g., "sim_found_match" from your .lang file).
+ * @param {...(string | number)} args - Arguments to replace placeholders (%s, %1, etc.) in the .lang file.
+ * @returns {import("@minecraft/server").RawMessage} The RawMessage object, ready to be sent.
  */
 export function t(player, key, ...args) {
-  // Determine which language file to use.
-  // If a player object exists, use their language. Otherwise, use the fallback.
-  const langFile = player
-    ? translations[player.lang] || translations[FALLBACK_LANG]
-    : translations[FALLBACK_LANG];
-  const fallbackFile = translations[FALLBACK_LANG];
+  // Create the RawMessage object that Minecraft expects.
+  const message = {
+    rawtext: [
+      {
+        // 'translate' tells Minecraft to look up this key in the client's language files.
+        translate: key,
+        // 'with' is an array of values to insert into the translation's placeholders.
+        // We must convert all arguments to strings, as required by the 'with' property.
+        with: args.length > 0 ? args.map(String) : undefined,
+      },
+    ],
+  };
 
-  // Get the template string. Fallback to English if the key is missing in the target language.
-  let template = langFile[key] || fallbackFile[key];
+  // Instead of sending the message, we return the object.
+  // This allows the calling function (e.g., in conversation.js) to decide what to do with it.
+  return message;
+}
 
-  // If the key doesn't exist anywhere, return the key itself so it's obvious something is missing.
-  if (!template) {
-    return key;
-  }
-
-  // Replace placeholders {0}, {1}, {2}... with the provided arguments.
-  return template.replace(/{(\d+)}/g, (match, number) => {
-    return typeof args[number] !== "undefined" ? args[number] : match;
-  });
+/**
+ * Sends a translation directly to the console (no player required).
+ * Useful for server logs; uses the server's default language.
+ *
+ * @param {string} key - The translation key.
+ * @param {...(string | number)} args - Arguments for placeholders.
+ */
+export function tConsole(key, ...args) {
+  // We build the same RawMessage object as the 't' function
+  const message = {
+    rawtext: [
+      {
+        translate: key,
+        with: args.length > 0 ? args.map(String) : undefined,
+      },
+    ],
+  };
+  
+  // Send the message directly to the server console.
+  world.sendMessage(message);
 }
