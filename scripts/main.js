@@ -12,8 +12,8 @@ import { ensureWaitingBoxTickingArea } from "./utils";
 
 // Initialize the system that tracks named villagers in the world.
 initializeTracker({
-    entityType: "minecraft:villager",
-    runInterval: 100 // Ticks (20 ticks = 1 second)
+  entityType: "minecraft:villager",
+  runInterval: 100, // Ticks (20 ticks = 1 second)
 });
 
 // Initialize the system that listens to player chat and handles conversations.
@@ -22,4 +22,5 @@ initializeConversationHandler();
 // Ensure the ticking area for the "waiting box" exists.
 ensureWaitingBoxTickingArea(world);
 
-console.log("[VillagerAI] System V5 successfully loaded. ✅");
+
+
