@@ -31,7 +31,7 @@ function updateTrackedEntities(entityType) {
                 pendingAction: null,
                 pendingNameConfirmation: null
             });
-            log(t(undefined, "villager_registered", formatted));
+            log(t(undefined, "villager.registered", formatted));
         }
     }
 }
