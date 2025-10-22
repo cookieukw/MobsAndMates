@@ -1,0 +1,23 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Mobs & Mates RP",
+    "description": "Resource pack for Mobs & Mates — includes textures, models and translations.",
+    "uuid": "7e31e4e4-9a6b-4c0d-83cf-33ad2a8f41d8",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 20, 0]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "f8b7f4d9-1b3c-4a62-9c18-67496a8d1ad7",
+      "version": [1, 0, 0]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "95b195d1-5071-4f27-b31c-c9c779b128d1",
+      "version": [1, 0, 0]
+    }
+  ]
+}
