@@ -99,99 +99,136 @@ function findSafeLocation(dimension, startLocation, minDistance, maxDistance) {
  * @param {import("@minecraft/server").Player} player The player who initiated the action.
  */
 export function startAction(villagerData, action, player) {
-    if (!villagerData.entity || !villagerData.entity.isValid) return;
+  if (!villagerData.entity || !villagerData.entity.isValid) return;
 
-    const villagerId = villagerData.entity.id;
-    villagerData.busy = true;
+  const villagerId = villagerData.entity.id;
+  villagerData.busy = true;
 
-    const actionName = action.intent;
-    const details = actionDetails[actionName];
-    const chosenTime = randomFrom(actionTimes[actionName]);
-    const formattedName = villagerData.entity.nameTag;
+  const actionName = action.intent;
+  const details = actionDetails[actionName];
+  const chosenTime = randomFrom(actionTimes[actionName]);
+  const formattedName = villagerData.entity.nameTag;
+  const translationKey = `action_prepare_${actionName}`; // ex: "action_prepare_mine"
 
-    player.sendMessage(t(player, "action_prepare", formattedName, actionName));
-    log(`[Action] ${formattedName} is starting '${actionName}' for ${chosenTime} minutes.`);
 
-    if (details.tool) {
-        try {
-            const equippable = villagerData.entity.getComponent(EntityComponentTypes.Equippable);
-            equippable.setEquipment(EquipmentSlot.Mainhand, new ItemStack(details.tool, 1));
-        } catch (e) {
-            log(`[Action] Could not equip tool on ${formattedName}.`);
-        }
+  player.sendMessage(t(player, translationKey, formattedName));
+  log(
+    `[Action] ${formattedName} is starting '${actionName}' for ${chosenTime} minutes.`
+  );
+
+  if (details.tool) {
+    try {
+      const equippable = villagerData.entity.getComponent(
+        EntityComponentTypes.Equippable
+      );
+      equippable.setEquipment(
+        EquipmentSlot.Mainhand,
+        new ItemStack(details.tool, 1)
+      );
+    } catch (e) {
+      log(`[Action] Could not equip tool on ${formattedName}.`);
+    }
+  }
+
+  system.runTimeout(() => {
+    const entity = world.getEntity(villagerId);
+    if (!entity || !entity.isValid) {
+      villagerData.busy = false;
+      return;
     }
 
-    system.runTimeout(() => {
-        const entity = world.getEntity(villagerId);
-        if (!entity || !entity.isValid) {
-            villagerData.busy = false;
-            return;
+    player.sendMessage(t(player, "action_start", formattedName, chosenTime));
+    entity.teleport(waitingBoxCoords);
+    entity.addEffect("invisibility", chosenTime * 60 * 20 + 100, {
+      showParticles: false,
+    });
+
+    system.runTimeout(
+      async () => {
+        const returningEntity = world.getEntity(villagerId);
+        if (!returningEntity || !returningEntity.isValid) {
+          villagerData.busy = false;
+          return;
         }
 
-        player.sendMessage(t(player, "action_start", formattedName, chosenTime));
-        entity.teleport(waitingBoxCoords);
-        entity.addEffect("invisibility", (chosenTime * 60 * 20) + 100, { showParticles: false });
+        const spawnLocation = findSafeLocation(
+          player.dimension,
+          player.location,
+          5,
+          10
+        );
+        returningEntity.teleport(spawnLocation || player.location);
+        returningEntity.removeEffect("invisibility");
 
-     
-        system.runTimeout(async () => {
-            const returningEntity = world.getEntity(villagerId);
-            if (!returningEntity || !returningEntity.isValid) {
-                villagerData.busy = false;
-                return;
-            }
-            
-            const spawnLocation = findSafeLocation(player.dimension, player.location, 5, 10);
-            returningEntity.teleport(spawnLocation || player.location);
-            returningEntity.removeEffect("invisibility");
+        if (details.reward_type === "structure_location") {
+          const structureToFind = randomFrom(details.loot_table);
+          log(
+            `[Explore] ${formattedName} is searching for a ${structureToFind}.`
+          );
 
-          
-            if (details.reward_type === 'structure_location') {
-                
-                const structureToFind = randomFrom(details.loot_table);
-                log(`[Explore] ${formattedName} is searching for a ${structureToFind}.`);
+          try {
+            const result = await player.dimension.runCommand(
+              `locate structure ${structureToFind}`
+            );
 
-                try {
-                    const result = await player.dimension.runCommand(`locate structure ${structureToFind}`);
-                    
-                    if (result.successCount > 0) {
-                       
-                        const coordsMatch = result.statusMessage.match(/-?\d+/g);
-                        if (coordsMatch && coordsMatch.length >= 3) {
-                            const [x, y, z] = coordsMatch;
-                            const structureName = t(player, `structure_${structureToFind}`);
-                            const coordsString = `X: ${x}, Y: ${y}, Z: ${z}`;
-                            player.sendMessage(t(player, "explore_report_location_success", formattedName, structureName, coordsString));
-                        }
-                    } else {
-                        player.sendMessage(t(player, "explore_report_location_fail", formattedName));
-                    }
-                } catch (e) {
-                    player.sendMessage(t(player, "explore_report_location_fail", formattedName));
-                    log(`[Explore] /locate command failed: ${e}`);
-                }
-                
+            if (result.successCount > 0) {
+              const coordsMatch = result.statusMessage.match(/-?\d+/g);
+              if (coordsMatch && coordsMatch.length >= 3) {
+                const [x, y, z] = coordsMatch;
+                const structureName = t(player, `structure_${structureToFind}`);
+                const coordsString = `X: ${x}, Y: ${y}, Z: ${z}`;
+                player.sendMessage(
+                  t(
+                    player,
+                    "explore_report_location_success",
+                    formattedName,
+                    structureName,
+                    coordsString
+                  )
+                );
+              }
             } else {
-           
-                const loot = calculateLoot(actionName, chosenTime);
-                if (loot.length > 0) {
-                    player.sendMessage(t(player, "action_return_success", formattedName, actionName));
-                    for (const reward of loot) {
-                        player.dimension.runCommand(`give "${player.name}" ${reward.item} ${reward.quantity}`);
-                    }
-                } else {
-                    player.sendMessage(t(player, "action_return_fail", formattedName));
-                }
+              player.sendMessage(
+                t(player, "explore_report_location_fail", formattedName)
+              );
             }
-       
-            try {
-                const equippable = returningEntity.getComponent(EntityComponentTypes.Equippable);
-                equippable.setEquipment(EquipmentSlot.Mainhand, undefined);
-            } catch (e) {}
+          } catch (e) {
+            player.sendMessage(
+              t(player, "explore_report_location_fail", formattedName)
+            );
+            log(`[Explore] /locate command failed: ${e}`);
+          }
+        } else {
+          const loot = calculateLoot(actionName, chosenTime);
+          if (loot.length > 0) {
+            player.sendMessage(
+              t(player, "action_return_success", formattedName, actionName)
+            );
+            for (const reward of loot) {
+              player.dimension.runCommand(`gamerule sendCommandFeedback false`);
+              player.dimension.runCommand(
+                `give "${player.name}" ${reward.item} ${reward.quantity}`
+              );
+              player.dimension.runCommand(`gamerule sendCommandFeedback true`);
+            }
+          } else {
+            player.sendMessage(t(player, "action_return_fail", formattedName));
+          }
+        }
 
-            villagerData.busy = false;
-            log(`[Action] ${formattedName} has finished the task and is now free.`);
-        }, DEBUG ? 100 : chosenTime * 60 * 20);
-    }, 100);
+        try {
+          const equippable = returningEntity.getComponent(
+            EntityComponentTypes.Equippable
+          );
+          equippable.setEquipment(EquipmentSlot.Mainhand, undefined);
+        } catch (e) {}
+
+        villagerData.busy = false;
+        log(`[Action] ${formattedName} has finished the task and is now free.`);
+      },
+      DEBUG ? 100 : chosenTime * 60 * 20
+    );
+  }, 100);
 }
 
 /**
