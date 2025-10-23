@@ -6,6 +6,8 @@ export const isWarn = true;
 export const thresholdDistanceFactor = 0.25;
 export const nameMatchThreshold = 0.6;
 export const waitingBoxCoords = { x: 0, y: 319, z: 0 };
+export const STRUCTURE_TEMPLATE_LOCATION = { x: 1, y: 0, z: 1 }; // Ensure loaded
+export const VILLAGER_SEARCH_RADIUS = 16;
 
 // --- Action Timings (in minutes) ---
 const short_time = DEBUG ? [0.1] : [5, 8];
@@ -23,6 +25,8 @@ export const actionTimes = {
   raid: short_time,
   explore: long_time,
   craft: short_time,
+  build_house: long_time,
+  build_barracks: long_time,
 };
 
 // --- Action Specifics (Tools & Loot) ---
@@ -473,4 +477,26 @@ export const actionDetails = {
     ],
   },
   raid: { tool: "minecraft:crossbow" },
+  build: [
+    {
+      intent_name: "build_house", // Corresponds to intent name in villager-actions.js
+      foundation_block: "mm:ground_house_placer", // Specific foundation block
+      structure_name: "ground_house", // .mcstructure name
+      structure_size: { x: 5, y: 4, z: 5 }, // !! EXACT Size X, Y, Z !!
+      build_time_per_layer: DEBUG ? 5 : 120, // Seconds per layer
+      time_variation_factor: 0.2,
+      tool: "minecraft:iron_shovel", // Visual tool
+    },
+    // --- Example for another structure ---
+    // {
+    //   intent_name: "build_barracks",
+    //   foundation_block: "mm:barracks_placer", // Different foundation block
+    //   structure_name: "barracks_level_1",
+    //   structure_size: { x: 8, y: 6, z: 7 },
+    //   build_time_per_layer: DEBUG ? 8 : 180,
+    //   time_variation_factor: 0.15,
+    //   tool: "minecraft:stone_axe"
+    // }
+    // Add more buildable structures here
+  ],
 };
