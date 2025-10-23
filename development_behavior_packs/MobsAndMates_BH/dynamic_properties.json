@@ -1,0 +1,21 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:entity": {
+    "mm:construction_marker": {
+      "mm:structure_name": { "type": "string", "default": "" },
+      "mm:current_layer": { "type": "int", "default": 0 },
+      "mm:total_layers": { "type": "int", "default": 0 },
+      "mm:builder_villager_id": { "type": "string", "default": "" },
+      "mm:build_location_x": { "type": "int", "default": 0 },
+      "mm:build_location_y": { "type": "int", "default": 0 },
+      "mm:build_location_z": { "type": "int", "default": 0 },
+      "mm:foundation_location_x": { "type": "int", "default": 0 },
+      "mm:foundation_location_y": { "type": "int", "default": 0 },
+      "mm:foundation_location_z": { "type": "int", "default": 0 },
+      "mm:last_build_tick": { "type": "int", "default": 0 },
+      "mm:structure_size_x": { "type": "int", "default": 0 },
+      "mm:structure_size_y": { "type": "int", "default": 0 },
+      "mm:structure_size_z": { "type": "int", "default": 0 }
+    }
+  }
+}
