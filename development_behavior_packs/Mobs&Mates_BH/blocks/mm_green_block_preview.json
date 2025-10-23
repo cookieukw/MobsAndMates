@@ -4,6 +4,14 @@
     "description": {
       "identifier": "mm:green_block_preview"
     },
-    "components": {}
+    "components": {
+      "minecraft:geometry": "geometry.preview_block",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "green_block_preview",
+          "render_method": "blend"
+        }
+      }
+    }
   }
 }
