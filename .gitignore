@@ -1,0 +1,11 @@
+*
+
+
+!development_behavior_packs
+!development_behavior_packs/MobsAndMates_BH
+!development_behavior_packs/MobsAndMates_BH/**/*
+!development_resource_packs
+!development_resource_packs/MobsAndMates_RP
+!development_resource_packs/MobsAndMates_RP/**/*
+!readme.md
+!.gitignore
