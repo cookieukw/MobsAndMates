@@ -18,6 +18,7 @@ import {
   startAction,
   handleComeHereAction,
   handleRaidAction,
+  handleBuildAction,
 } from "./action-handler";
 import { t } from "./translator";
 
@@ -191,7 +192,7 @@ function onChatSend(event) {
   if (action.status === "matched") {
     // If an intent was successfully matched, unlock the conversation.
     conversationManager.delete(player.id);
-
+player.sendMessage(action.intent)
     // Use a switch to delegate the command to the correct action handler.
     switch (action.intent) {
       case "come_here":
@@ -200,13 +201,13 @@ function onChatSend(event) {
         break;
 
       // Other special cases could be added here in the future.
-      case "build":
-        player.sendMessage("debug para construir");
-        break;
-
       case "raid":
         // Special case for the placeholder raid/defend action.
         handleRaidAction(targetEntityData, player);
+        break;
+
+      case action.intent.startsWith("build_") ? action.intent : null:
+        handleBuildAction(targetEntityData, action, player);
         break;
 
       default:
@@ -227,7 +228,7 @@ function onPlayerLeave(event) {
   const { playerId, playerName } = event;
   if (conversationManager.has(playerId)) {
     conversationManager.delete(playerId);
-    log(t(event.sender,"log_conversation_lock_release", playerName));
+    log(t(event.sender, "log_conversation_lock_release", playerName));
   }
 }
 
