@@ -1,0 +1,32 @@
+{
+  "format_version": "1.12",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "mm:ground_house_placer_recipe"
+    },
+
+    "tags": ["crafting_table"],
+
+    "pattern": ["WLW", "DSD", "D D"],
+
+    "key": {
+      "W": {
+        "tag": "minecraft:planks"
+      },
+      "L": {
+        "tag": "minecraft:wool"
+      },
+      "D": {
+        "item": "minecraft:dirt"
+      },
+      "S": {
+        "item": "minecraft:stick"
+      }
+    },
+
+    "result": {
+      "item": "mm:ground_house_placer",
+      "count": 1
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+ "format_version": "1.21.0",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "mm:construction_marker",
+      "is_spawnable": false,
+      "is_summonable": true,
+      "is_experimental": false
+    },
+    "components": {
+      "minecraft:type_family": { "family": ["inanimate", "marker"] },
+      "minecraft:collision_box": { "width": 0.1, "height": 0.1 },
+      "minecraft:health": { "value": 1, "max": 1 },
+      "minecraft:damage_sensor": {
+        "triggers": { "cause": "all", "deals_damage": false }
+      },
+      "minecraft:persistent": {},
+      "minecraft:physics": { "has_gravity": false, "has_collision": false }
+    },
+
+    "events": {
+      "minecraft:remove_entity": {
+        "add": { "component_groups": ["despawn"] }
+      }
+    },
+    "component_groups": {
+      "despawn": { "minecraft:instant_despawn": {} }
+    }
+  }
+}
