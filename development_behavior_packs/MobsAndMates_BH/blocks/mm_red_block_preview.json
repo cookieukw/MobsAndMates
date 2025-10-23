@@ -5,12 +5,13 @@
       "identifier": "mm:red_block_preview"
     },
     "components": {
-       "minecraft:geometry": "geometry.preview_block","minecraft:material_instances": {
-				"*": {
-					"texture": "red_block_preview",
-					"render_method": "blend"
-				}
-			}
+      "minecraft:geometry": "geometry.preview_block",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "red_block_preview",
+          "render_method": "blend"
+        }
+      }
     }
   }
 }
