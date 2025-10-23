@@ -69,3 +69,19 @@ structure_jungle_temple=Jungle Temple
 structure_ruined_portal=Ruined Portal
 structure_shipwreck=Shipwreck
 structure_mineshaft=Mineshaft
+
+tile.mm:green_block_preview.name=Green Block Preview
+tile.mm:red_block_preview.name=Red Block Preview
+tile.mm:ground_house_placer.name=Ground House Foundation
+
+
+build_success=%s Construction complete! Your ground house is ready.
+build_fail_obstructed=%s I can't build here, the area isn't clear!
+
+action_build_start=<%1> Okay, starting construction of the %2 at %3, %4, %5. It will take some time.
+action_build_finish=<%1> Construction of the %2 is complete!
+action_build_fail_obstructed=<%1> I couldn't find a suitable clear area nearby with a foundation block!
+action_build_fail_no_foundation=<%1> I couldn't find any foundation blocks nearby to build on.
+action_build_fail_error=<%1> Something went wrong trying to start construction.
+action_build_fail_config=<%1> Hmm, I don't know what or how big to build.
+action_build_complete_log=[Build] Structure '%1' completed by villager %2.

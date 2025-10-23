@@ -8,6 +8,9 @@
     },
     "green_block_preview": {
       "textures": "textures/blocks/green_block_preview"
+    },
+    "ground_house_placer_texture": {
+      "textures": "textures/blocks/ground_house_placer_texture.png"
     }
   }
 }

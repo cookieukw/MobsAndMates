@@ -58,3 +58,19 @@ structure_jungle_temple=Templo da Selva
 structure_ruined_portal=Portal em Ruínas
 structure_shipwreck=Navio Naufragado
 structure_mineshaft=Mina Abandonada
+
+mm:green_block_preview.name=Pré-visualização de bloco verde
+mm:red_block_preview.name=Pré-visualização de bloco vermelho
+tile.mm:ground_house_placer.name=Fundação da Casa de Terra
+
+build_success=%s Construção completa! Sua casa de terra está pronta.
+build_fail_obstructed=%s Não consigo construir aqui, a área não está livre!
+
+
+action_build_start=<%1> Certo, iniciando a construção da %2 em %3, %4, %5. Vai levar um tempo.
+action_build_finish=<%1> A construção da %2 está completa!
+action_build_fail_obstructed=<%1> Não encontrei uma área livre adequada com um bloco de fundação por perto!
+action_build_fail_no_foundation=<%1> Não encontrei nenhum bloco de fundação por perto para construir.
+action_build_fail_error=<%1> Algo deu errado ao tentar iniciar a construção.
+action_build_fail_config=<%1> Hmm, não sei o que ou quão grande construir.
+action_build_complete_log=[Build] Estrutura '%1' completada pelo aldeão %2.
