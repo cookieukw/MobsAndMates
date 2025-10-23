@@ -1,0 +1,23 @@
+{
+
+  "format_version": "1.20.60",
+  "minecraft:block": {
+    "description": {
+      "identifier": "mm:ground_house_placer"
+    },
+    "components": {
+      "minecraft:display_name": "tile.mm:ground_house_placer.name",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "ground_house_placer_texture",
+          "render_method": "blend"
+        }
+      },
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 0.8
+      },
+      "minecraft:map_color": "#876744"
+
+    }
+    }
+}
