@@ -1,0 +1,71 @@
+sim_found_match=Found a match!
+sim_closest_phrase=Closest phrase
+sim_lev_distance=Levenshtein distance
+sim_threshold=Threshold
+sim_success=Success!
+sim_success_text=The intent was classified correctly.
+sim_intent_classified=Intent classified:
+sim_ai_response=AI response
+sim_no_match=No match found.
+sim_failure_text=Failure
+sim_comparing=Comparing with all intents...
+sim_confidence=Confidence
+sim_not_recognized=Intent not recognized
+sim_confidence_low=Confidence low
+sim_below_threshold=Below threshold
+sim_fallback_response=I don't understand.
+
+
+villager_registered=[Tracker] Registered: %s
+villager_busy_other=§c%s is busy talking to someone else.§r
+villager_unclear_confirmation=<%s> I didn't understand if that's a yes or a no.
+villager_unclear_intent=<%s> What exactly do you want me to do?
+villager_cancel_action=<%s> Alright, cancelling.
+action_prepare=<%s> Right, getting ready to {1}.
+action_start=<%s> I'm off! I'll be back in about {1} minutes.
+action_return_success=<%s> I've finished {1}! I brought some things for you.
+action_return_fail=<%s> I couldn't find anything useful this time...
+log_conversation_lock_release=[Convo] Player %s left, releasing conversation lock.
+villager_confirm_name=<%s> Are you talking to me?
+villager_confirm_no=<%s> Oh, my mistake.
+villager_confirm_timeout=<%s> Hmmm, I guess not.
+action_come_here_ack=<%s> I'm on my way!
+action_come_here_done=<%s> I'm here. What do you need?
+explore_report_intro=<%s> My exploration is complete! I found:
+explore_report_single= a %s.
+explore_report_multiple= a %s and a {1}.
+explore_report_fail=<%s> I explored for a long time but didn't find anything interesting.
+
+action_prepare_mine=<%s> Right, getting ready to mine.
+action_prepare_hunt=<%s> Right, getting ready to hunt.
+action_prepare_farm=<%s> Right, I'll take care of the farm.
+action_prepare_gather=<%s> Right, getting ready to gather resources.
+action_prepare_fish=<%s> Right, I'm off to fish.
+action_prepare_smelt=<%s> Right, getting ready to smelt ores.
+action_prepare_alchemy=<%s> Right, getting ready to brew potions.
+action_prepare_craft=<%s> Right, getting ready to craft items.
+action_prepare_protect=<%s> Right, I'll stand guard.
+
+action_return_success_mine=<%s> I've finished mining! I brought some things for you.
+action_return_success_hunt=<%s> I've finished hunting! I brought some things for you.
+action_return_success_farm=<%s> I've finished farming! I brought some things for you.
+action_return_success_gather=<%s> I've finished gathering! I brought some things for you.
+action_return_success_fish=<%s> I've finished fishing! I brought some things for you.
+action_return_success_smelt=<%s> I've finished smelting! I brought some things for you.
+action_return_success_alchemy=<%s> I've finished brewing! I brought some things for you.
+action_return_success_craft=<%s> I've finished crafting! I brought some things for you.
+action_return_success_protect=<%s> I've finished my patrol! Everything seems safe.
+
+action_prepare_explore=<%s> Right, getting ready to explore.
+
+explore_report_location_success=<%s> I found a {1}! It's located at coordinates: {2}
+
+explore_report_location_fail=<%s> I explored for a long time but couldn't find any new structures nearby.
+
+structure_village=Village
+structure_pillager_outpost=Pillager Outpost
+structure_desert_pyramid=Desert Pyramid
+structure_jungle_temple=Jungle Temple
+structure_ruined_portal=Ruined Portal
+structure_shipwreck=Shipwreck
+structure_mineshaft=Mineshaft
