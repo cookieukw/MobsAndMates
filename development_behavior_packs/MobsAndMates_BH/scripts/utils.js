@@ -116,3 +116,17 @@ export const levenshtein = (a, b) => {
   }
   return matrix[b.length][a.length];
 };
+
+/**
+ * Calculates the squared distance between two locations.
+ * Avoids using sqrt for performance when only comparing distances.
+ * @param {{x: number, y: number, z: number}} pos1 First position.
+ * @param {{x: number, y: number, z: number}} pos2 Second position.
+ * @returns {number} The squared distance.
+ */
+export function distanceSquared(pos1, pos2) {
+  const dx = pos2.x - pos1.x;
+  const dy = pos2.y - pos1.y;
+  const dz = pos2.z - pos1.z;
+  return dx * dx + dy * dy + dz * dz;
+}
