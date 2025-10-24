@@ -1,66 +1,61 @@
 sim_found_match=Found a match!
-sim_closest_phrase=Closest phrase
-sim_lev_distance=Levenshtein distance
-sim_threshold=Threshold
+sim_closest_phrase=Closest phrase: %1
+sim_lev_distance=Levenshtein distance: %1
+sim_threshold=Threshold: %1
 sim_success=Success!
 sim_success_text=The intent was classified correctly.
-sim_intent_classified=Intent classified:
-sim_ai_response=AI response
+sim_intent_classified=Intent classified: %1
+sim_ai_response=AI response: %1
 sim_no_match=No match found.
 sim_failure_text=Failure
 sim_comparing=Comparing with all intents...
-sim_confidence=Confidence
+sim_confidence=Confidence: %1
 sim_not_recognized=Intent not recognized
 sim_confidence_low=Confidence low
 sim_below_threshold=Below threshold
-sim_fallback_response=I don't understand.
+sim_fallback_response=I don't understand what you mean.
 
+villager.registered=[Tracker] Registered: %1
+villager_busy_other=§c%1 is busy talking to someone else.§r
+villager_unclear_confirmation=<%1> I didn't understand if that's a yes or a no.
+villager_unclear_intent=<%1> What exactly do you want me to do?
+villager_cancel_action=<%1> Alright, cancelling.
+villager_confirm_name=<%1> Are you talking to me?
+villager_confirm_no=<%1> Oh, my mistake.
+villager_confirm_timeout=<%1> Hmmm, I guess not.
+log_conversation_lock_release=[Convo] Player %1 left, releasing conversation lock.
 
-villager_registered=[Tracker] Registered: %s
-villager_busy_other=§c%s is busy talking to someone else.§r
-villager_unclear_confirmation=<%s> I didn't understand if that's a yes or a no.
-villager_unclear_intent=<%s> What exactly do you want me to do?
-villager_cancel_action=<%s> Alright, cancelling.
-action_prepare=<%s> Right, getting ready to {1}.
-action_start=<%s> I'm off! I'll be back in about {1} minutes.
-action_return_success=<%s> I've finished {1}! I brought some things for you.
-action_return_fail=<%s> I couldn't find anything useful this time...
-log_conversation_lock_release=[Convo] Player %s left, releasing conversation lock.
-villager_confirm_name=<%s> Are you talking to me?
-villager_confirm_no=<%s> Oh, my mistake.
-villager_confirm_timeout=<%s> Hmmm, I guess not.
-action_come_here_ack=<%s> I'm on my way!
-action_come_here_done=<%s> I'm here. What do you need?
-explore_report_intro=<%s> My exploration is complete! I found:
-explore_report_single= a %s.
-explore_report_multiple= a %s and a {1}.
-explore_report_fail=<%s> I explored for a long time but didn't find anything interesting.
+action_prepare=<%1> Right, getting ready to %2.
+action_start=<%1> I'm off! I'll be back in about %2 minutes.
+action_return_fail=<%1> I couldn't find anything useful this time...
 
-action_prepare_mine=<%s> Right, getting ready to mine.
-action_prepare_hunt=<%s> Right, getting ready to hunt.
-action_prepare_farm=<%s> Right, I'll take care of the farm.
-action_prepare_gather=<%s> Right, getting ready to gather resources.
-action_prepare_fish=<%s> Right, I'm off to fish.
-action_prepare_smelt=<%s> Right, getting ready to smelt ores.
-action_prepare_alchemy=<%s> Right, getting ready to brew potions.
-action_prepare_craft=<%s> Right, getting ready to craft items.
-action_prepare_protect=<%s> Right, I'll stand guard.
+action_prepare_mine=<%1> Right, getting ready to mine.
+action_prepare_hunt=<%1> Right, getting ready to hunt.
+action_prepare_farm=<%1> Right, I'll take care of the farm.
+action_prepare_gather=<%1> Right, getting ready to gather resources.
+action_prepare_fish=<%1> Right, I'm off to fish.
+action_prepare_smelt=<%1> Right, getting ready to smelt ores.
+action_prepare_alchemy=<%1> Right, getting ready to brew potions.
+action_prepare_craft=<%1> Right, getting ready to craft items.
+action_prepare_protect=<%1> Right, I'll stand guard.
+action_prepare_explore=<%1> Right, getting ready to explore.
 
-action_return_success_mine=<%s> I've finished mining! I brought some things for you.
-action_return_success_hunt=<%s> I've finished hunting! I brought some things for you.
-action_return_success_farm=<%s> I've finished farming! I brought some things for you.
-action_return_success_gather=<%s> I've finished gathering! I brought some things for you.
-action_return_success_fish=<%s> I've finished fishing! I brought some things for you.
-action_return_success_smelt=<%s> I've finished smelting! I brought some things for you.
-action_return_success_alchemy=<%s> I've finished brewing! I brought some things for you.
-action_return_success_craft=<%s> I've finished crafting! I brought some things for you.
-action_return_success_protect=<%s> I've finished my patrol! Everything seems safe.
+action_return_success=<%1> I've finished %2! I brought some things for you.
+action_return_success_mine=<%1> I've finished mining! I brought some things for you.
+action_return_success_hunt=<%1> I've finished hunting! I brought some things for you.
+action_return_success_farm=<%1> I've finished farming! I brought some things for you.
+action_return_success_gather=<%1> I've finished gathering! I brought some things for you.
+action_return_success_fish=<%1> I've finished fishing! I brought some things for you.
+action_return_success_smelt=<%1> I've finished smelting! I brought some things for you.
+action_return_success_alchemy=<%1> I've finished brewing! I brought some things for you.
+action_return_success_craft=<%1> I've finished crafting! I brought some things for you.
+action_return_success_protect=<%1> I've finished my patrol! Everything seems safe.
 
-action_prepare_explore=<%s> Right, getting ready to explore.
+action_come_here_ack=<%1> I'm on my way!
+action_come_here_done=<%1> I'm here. What do you need?
 
-explore_report_location_success=<%s> I found a {1}! It's located at coordinates: {2}
-
-explore_report_location_fail=<%s> I explored for a long time but couldn't find any new structures nearby.
+explore_report_location_success=<%1> I found a %2! It's located at coordinates: %3
+explore_report_location_fail=<%1> I explored for a long time but couldn't find any new structures nearby.
 
 structure_village=Village
 structure_pillager_outpost=Pillager Outpost
@@ -69,19 +64,20 @@ structure_jungle_temple=Jungle Temple
 structure_ruined_portal=Ruined Portal
 structure_shipwreck=Shipwreck
 structure_mineshaft=Mineshaft
+structure_mansion=Woodland Mansion
+structure_stronghold=Stronghold
 
-tile.mm:green_block_preview.name=Green Block Preview
-tile.mm:red_block_preview.name=Red Block Preview
+action_build_start=<%1> Fine, I'll start building the stupid %2 at %3, %4, %5. Don't rush me.
+action_build_finish=<%1> Finished that %2 already. What now?
+action_build_fail_obstructed=<%1> Can't build here, genius! Move your junk off the foundation spot.
+action_build_fail_no_foundation=<%1> You expect me to build without a foundation nearby? Are you blind?! Place one first!
+action_build_fail_error=<%1> Ugh, something went wrong. Probably your fault. Try again, maybe?
+action_build_fail_config=<%1> Build *what*? How big? I don't have instructions for that!
+action_build_complete_log=[Build] Structure '%1' reluctantly completed by villager %2.
+
+build_success=Construction complete! Your %2 is ready.
+build_cancelled=Construction cancelled. Figures.
+
+tile.mm:green_block_preview.name=Green Preview Block
+tile.mm:red_block_preview.name=Red Preview Block
 tile.mm:ground_house_placer.name=Ground House Foundation
-
-
-build_success=%s Construction complete! Your ground house is ready.
-build_fail_obstructed=%s I can't build here, the area isn't clear!
-
-action_build_start=<%1> Okay, starting construction of the %2 at %3, %4, %5. It will take some time.
-action_build_finish=<%1> Construction of the %2 is complete!
-action_build_fail_obstructed=<%1> I couldn't find a suitable clear area nearby with a foundation block!
-action_build_fail_no_foundation=<%1> I couldn't find any foundation blocks nearby to build on.
-action_build_fail_error=<%1> Something went wrong trying to start construction.
-action_build_fail_config=<%1> Hmm, I don't know what or how big to build.
-action_build_complete_log=[Build] Structure '%1' completed by villager %2.

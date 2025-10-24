@@ -4,52 +4,47 @@ sim_lev_distance=Distância Levenshtein
 sim_threshold=Limite
 sim_success=Sucesso!
 sim_success_text=A intenção foi classificada corretamente.
-sim_intent_classified=Intenção classificada:
-sim_ai_response=Resposta da IA
+sim_intent_classified=Intenção classificada: %1
+sim_ai_response=Resposta da IA: %1
 sim_no_match=Nenhuma correspondência encontrada.
 sim_failure_text=Falha
 sim_comparing=Comparando com todas as intenções...
-sim_confidence=Confiança
+sim_confidence=Confiança: %1
 sim_not_recognized=Intenção não reconhecida
 sim_confidence_low=Confiança baixa
 sim_below_threshold=Abaixo do limite
-sim_fallback_response=Não entendi.
+sim_fallback_response=Não entendi o que você quis dizer.
+
+villager.registered=[Tracker] Registrado: %1
+villager_busy_other=§c%1 está ocupado conversando com outra pessoa.§r
+villager_unclear_confirmation=<%1> Não entendi se é pra confirmar ou não.
+villager_unclear_intent=<%1> O que exatamente você quer que eu faça?
+villager_cancel_action=<%1> Beleza, cancelando então.
+villager_confirm_name=<%1> Você está falando comigo?
+villager_confirm_no=<%1> Ah, foi engano meu.
+villager_confirm_timeout=<%1> Hmmm, acho que não.
+log_conversation_lock_release=[Convo] Jogador %1 saiu, liberando trava de conversa. 
+
+action_prepare=<%1> Certo, me preparando para %2. 
+action_start=<%1> Estou de saída! Volto em cerca de %2 minutos. 
+action_return_fail=<%1> Não consegui encontrar nada de útil desta vez... 
+
+action_return_success=<%1> Terminei de %2! Trouxe algumas coisas para você.
+action_return_success_mine=<%1> Terminei de minerar! Trouxe umas pedras para você. 
+action_return_success_hunt=<%1> Terminei a caçada! Veja o que consegui. 
+action_return_success_farm=<%1> Colheita feita! Trouxe o que plantei. 
+action_return_success_gather=<%1> Terminei de coletar! Juntei uns materiais.
+action_return_success_fish=<%1> Pesca finalizada! Veja se serve. 
+action_return_success_smelt=<%1> Terminei de esquentar as coisas! Pegue os lingotes. 
+action_return_success_alchemy=<%1> As poções estão... prontas? Trouxe uns ingredientes. 
+action_return_success_craft=<%1> Terminei de fabricar! Fiz umas coisinhas. 
 
 
-villager.registered=[Tracker] Registrado: %s
-villager_busy_other=§c%s está ocupado conversando com outra pessoa.§r
-villager_unclear_confirmation=<%s> Não entendi se é pra confirmar ou não.
-villager_unclear_intent=<%s> O que exatamente você quer que eu faça?
-villager_cancel_action=<%s> Beleza, cancelando então.
-action_prepare=<%s> Certo, me preparando para %s.
-action_start=<%s> Estou de saída! Volto em cerca de %s minutos.
-action_return_success=<%s> Terminei de %s! Trouxe algumas coisas para você.
-action_return_fail=<%s> Não consegui encontrar nada de útil desta vez...
-log_conversation_lock_release=[Convo] Jogador %s saiu, liberando trava de conversa.
-villager_confirm_name=<%s> Você está falando comigo?
-villager_confirm_no=<%s> Ah, foi engano meu.
-villager_confirm_timeout=<%s> Hmmm, acho que não.
-action_come_here_ack=<%s> Estou a caminho!
-action_come_here_done=<%s> Cheguei. O que precisa?
-explore_report_intro=<%s> Minha exploração terminou! Eu encontrei:
-explore_report_single= uma %s.
-explore_report_multiple= uma %s e um %s.
-explore_report_fail=<%s> Eu explorei por um bom tempo mas não encontrei nada interessante.
-
-action_return_success_mine=<%s> Terminei de minerar! Eu trouxe algumas coisas para você.
-action_return_success_hunt=<%s> Terminei de caçar! Eu trouxe algumas coisas para você.
-action_return_success_farm=<%s> Terminei de cuidar da plantação! Eu trouxe algumas coisas para você.
-action_return_success_gather=<%s> Terminei de coletar! Eu trouxe algumas coisas para você.
-action_return_success_fish=<%s> Terminei de pescar! Eu trouxe algumas coisas para você.
-action_return_success_smelt=<%s> Terminei de fundir! Eu trouxe algumas coisas para você.
-action_return_success_alchemy=<%s> Terminei as poções! Eu trouxe algumas coisas para você.
-action_return_success_craft=<%s> Terminei de fabricar! Eu trouxe algumas coisas para você.
-
-action_prepare_explore=<%s> Certo, me preparando para explorar.
-
-explore_report_location_success=<%s> Eu encontrei um(a) {1}! Está nas coordenadas: {2}
-
-explore_report_location_fail=<%s> Eu explorei por um bom tempo, mas não encontrei nenhuma estrutura nova por perto.
+action_come_here_ack=<%1> Estou a caminho! 
+action_come_here_done=<%1> Cheguei. O que precisa? 
+action_prepare_explore=<%1> Certo, me preparando para explorar. 
+explore_report_location_success=<%1> Eu encontrei um(a) %2! Fica nas coordenadas: %3 
+explore_report_location_fail=<%1> Eu explorei por um bom tempo, mas não encontrei nenhuma estrutura nova por perto. 
 
 structure_village=Vila
 structure_pillager_outpost=Posto Avançado de Saqueadores
@@ -58,19 +53,23 @@ structure_jungle_temple=Templo da Selva
 structure_ruined_portal=Portal em Ruínas
 structure_shipwreck=Navio Naufragado
 structure_mineshaft=Mina Abandonada
+structure_mansion=Mansão da Floresta
+structure_stronghold=Fortaleza
 
-mm:green_block_preview.name=Pré-visualização de bloco verde
-mm:red_block_preview.name=Pré-visualização de bloco vermelho
+
+action_build_start=<%1> Tá, tá, vou começar a construir essa %2 em %3, %4, %5. Não me apressa! 
+action_build_finish=<%1> Terminei a %2. Que mais você quer? Aff...
+action_build_fail_obstructed=<%1> Não consigo construir aqui, a área não está livre! 
+action_build_fail_no_foundation=<%1> Não encontrei nenhum bloco de fundação por perto para construir. 
+action_build_fail_error=<%1> Aff, deu alguma M aqui. Provavelmente culpa sua. Tenta de novo, sei lá. 
+action_build_fail_config=<%1> Construir *o quê*? De que tamanho? Não me passaram as instruções pra isso! 
+action_build_complete_log=[Build] Estrutura '%1' completada a contragosto pelo aldeão %2. 
+
+build_success=Construção completa! Sua %2 está pronta. 
+
+build_cancelled=Construção cancelada. Tinha que ser.
+
+
+tile.mm:green_block_preview.name=Bloco de Prévia Verde
+tile.mm:red_block_preview.name=Bloco de Prévia Vermelho
 tile.mm:ground_house_placer.name=Fundação da Casa de Terra
-
-build_success=%s Construção completa! Sua casa de terra está pronta.
-build_fail_obstructed=%s Não consigo construir aqui, a área não está livre!
-
-
-action_build_start=<%1> Certo, iniciando a construção da %2 em %3, %4, %5. Vai levar um tempo.
-action_build_finish=<%1> A construção da %2 está completa!
-action_build_fail_obstructed=<%1> Não encontrei uma área livre adequada com um bloco de fundação por perto!
-action_build_fail_no_foundation=<%1> Não encontrei nenhum bloco de fundação por perto para construir.
-action_build_fail_error=<%1> Algo deu errado ao tentar iniciar a construção.
-action_build_fail_config=<%1> Hmm, não sei o que ou quão grande construir.
-action_build_complete_log=[Build] Estrutura '%1' completada pelo aldeão %2.
