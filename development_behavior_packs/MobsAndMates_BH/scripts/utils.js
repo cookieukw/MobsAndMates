@@ -22,7 +22,7 @@ export function log(message, player) {
     if (typeof message === "object" && message !== null && message.rawtext) {
       world.sendMessage(message);
     } else {
-      console.warn(String(message)); 
+      console.warn(String(message));
     }
   }
 }
@@ -132,6 +132,67 @@ export function distanceSquared(pos1, pos2) {
   return dx * dx + dy * dy + dz * dz;
 }
 
+export function randomColor() {
+  const colors = [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+  ];
+  return "§" + colors[Math.floor(Math.random() * colors.length)];
+}
 
+/**
+ * Sends a translated message formatted as if spoken by a villager, using their assigned chat color.
+ * @param {import("@minecraft/server").Player} player - The player to send the message to.
+ * @param {import("@minecraft/server").Entity} villagerEntity - The villager entity speaking.
+ * @param {string} messageKey - The translation key for the message content.
+ * @param {(string | number)[]} messageArgs - Arguments for the translation key's placeholders (%1, %2...).
+ */
+export function sendVillagerMessage(
+  player,
+  villagerEntity,
+  messageKey,
+  messageArgs = []
+) {
+  if (!player || !villagerEntity?.isValid) return; // Safety check
 
+  // Get the stored color, defaulting to white (§f) if missing
+  const chatColor = villagerEntity.getDynamicProperty("mm:chat_color") ?? "§f";
+  // Get the villager's current name tag (which includes the color code already)
+  const nameTag = villagerEntity.nameTag ?? "Villager"; // Fallback name
 
+  try {
+    player.sendMessage({
+      // Use rawtext to combine the colored prefix with the translated message
+      rawtext: [
+        {
+          // The prefix uses the stored color, displays the name tag, and resets color after
+          text: `${chatColor}<${nameTag}>§r `, // Includes name color automatically from nameTag
+          // text: `${chatColor}<${villagerEntity.nameTag}>§r ` // Simpler if nameTag reliable
+        },
+        {
+          // The actual message content, translated using the key and args
+          translate: messageKey,
+          with: messageArgs.map(String), // Ensure all args are strings
+        },
+      ],
+    });
+  } catch (e) {
+    log(`Error sending villager message: ${e}`);
+    // Fallback to simpler message if rawtext fails
+    player.sendMessage(`${chatColor}<${nameTag}>§r ${messageKey}`);
+  }
+}
