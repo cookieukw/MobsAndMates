@@ -334,4 +334,23 @@ export const villager_actions_intents = [
     ],
     responses: [],
   },
+  {
+    name: "cancel_task", // Ou "do_nothing", "nevermind"
+    trainingPhrases: [
+      // Portuguese
+      "cancelar",
+      "nada",
+      "deixa pra la",
+      "esquece",
+      "nao fazer nada",
+      // English
+      "cancel",
+      "nothing",
+      "nevermind",
+      "forget it",
+      "stop",
+      "do nothing"
+    ],
+    responses: [] 
+  }
 ];
