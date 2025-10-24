@@ -4,7 +4,7 @@
     "name": "Mobs & Mates RP",
     "description": "Resource pack for Mobs & Mates — includes textures, models and translations.",
     "uuid": "88163f29-7378-49d8-b5a2-031e11067498",
-    "version": [1, 0, 0],
+    "version": [1, 1, 0],
     "min_engine_version": [1, 20, 0]
   },
   "modules": [
