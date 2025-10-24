@@ -1,10 +1,8 @@
-// modules/conversation.js
-
 /**
  * @file Manages player-entity conversations, intent classification, and action delegation.
  */
 
-import { world, system } from "@minecraft/server"; // Adicionado system
+import { world, system } from "@minecraft/server"; 
 import { classifyMessage } from "../classifier";
 import { villager_actions_intents } from "../intents/villager-actions";
 import { confirmation_intents } from "../intents/confirmation";
@@ -35,15 +33,12 @@ function handleNameConfirmation(player, villagerData, msg) {
   );
   const entity = villagerData.entity;
 
-  // Independentemente da resposta, a tentativa de confirmação acaba aqui.
   villagerData.pendingNameConfirmation = null;
 
   if (conf.status === "matched" && conf.intent === "yes") {
-    // Se sim, trava a conversa e pergunta o que fazer.
     conversationManager.set(player.id, entity.id);
     player.sendMessage(t(player, "villager_unclear_intent", entity.nameTag));
   } else {
-    // Se não (ou se não entendeu), o aldeão assume que não era com ele.
     player.sendMessage(t(player, "villager_confirm_no", entity.nameTag));
   }
 }
@@ -192,7 +187,6 @@ function onChatSend(event) {
   if (action.status === "matched") {
     // If an intent was successfully matched, unlock the conversation.
     conversationManager.delete(player.id);
-player.sendMessage(action.intent)
     // Use a switch to delegate the command to the correct action handler.
     switch (action.intent) {
       case "come_here":
