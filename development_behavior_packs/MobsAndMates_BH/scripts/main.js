@@ -1,26 +1,18 @@
 // main.js
-
 /**
- * @file This is the main entry point for the Villager AI addon.
- * It initializes all the necessary modules and systems.
+ * @file Main entry point. Initializes all addon systems.
  */
-
-import { world } from "@minecraft/server";
+import { world, system } from "@minecraft/server";
 import { initializeTracker } from "./modules/entity-manager";
 import { initializeConversationHandler } from "./modules/conversation";
-import { ensureWaitingBoxTickingArea } from "./utils";
+import { initializePlayerPreviewSystem } from "./modules/player-build-preview";
+import { ensureWaitingBoxTickingArea, log } from "./utils";
 
-// Initialize the system that tracks named villagers in the world.
-initializeTracker({
-  entityType: "minecraft:villager",
-  runInterval: 100, // Ticks (20 ticks = 1 second)
-});
 
-// Initialize the system that listens to player chat and handles conversations.
-initializeConversationHandler();
-
-// Ensure the ticking area for the "waiting box" exists.
+initializeTracker({ entityType: "minecraft:villager", runInterval: 100 });
+initializeConversationHandler(); 
+initializePlayerPreviewSystem(world); 
 ensureWaitingBoxTickingArea(world);
 
-
+console.log("[Mobs&Mates]] Systems loaded. ✅");
 
