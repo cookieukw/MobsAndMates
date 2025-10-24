@@ -198,7 +198,8 @@ export function sendVillagerMessage(
 }
 
 // Helper function to remove Minecraft color codes (§0-§f, §l, §o, §n, §m, §k, §r)
+// Remove Minecraft color and formatting codes (§0-§f, §k, §l, §m, §n, §o, §r)
 export function stripColorCodes(text) {
-    if (!text) return "";
-    return text.replace(/§.+?/g, "");
+  if (!text) return "";
+  return text.replace(/§[0-9a-fk-or]/gi, "");
 }
