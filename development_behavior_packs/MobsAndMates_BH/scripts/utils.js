@@ -196,3 +196,9 @@ export function sendVillagerMessage(
     player.sendMessage(`${chatColor}<${nameTag}>§r ${messageKey}`);
   }
 }
+
+// Helper function to remove Minecraft color codes (§0-§f, §l, §o, §n, §m, §k, §r)
+export function stripColorCodes(text) {
+    if (!text) return "";
+    return text.replace(/§.+?/g, "");
+}
