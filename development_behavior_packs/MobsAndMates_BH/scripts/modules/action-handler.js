@@ -1,5 +1,3 @@
-// modules/action-handler.js
-
 /**
  * @file Handles the execution of villager actions, such as mining or hunting.
  */
@@ -8,15 +6,14 @@ import {
   world,
   system,
   EntityComponentTypes,
-  //ItemStack,
-  //EntityComponentTypes,
-  //EquipmentSlot,
+  BlockPermutation,
 } from "@minecraft/server";
-import { log, randomFrom } from "../utils";
+import { distanceSquared, log, randomFrom } from "../utils";
 import {
   actionDetails,
   actionTimes,
   DEBUG,
+  VILLAGER_SEARCH_RADIUS,
   waitingBoxCoords,
 } from "../config/villager-config";
 import { t } from "./translator";
@@ -109,7 +106,6 @@ export function startAction(villagerData, action, player) {
   const chosenTime = randomFrom(actionTimes[actionName]);
   const formattedName = villagerData.entity.nameTag;
   const translationKey = `action_prepare_${actionName}`; // ex: "action_prepare_mine"
-
 
   player.sendMessage(t(player, translationKey, formattedName));
   log(
@@ -305,4 +301,247 @@ export function handleComeHereAction(villagerData, player) {
       log(`[Action] Error during 'come_here' teleport: ${e}`);
     }
   }, 40); // 2-second delay (40 ticks)
+}
+
+/**
+ * Handles the "build" action. Villager searches for a clear foundation
+ * and instantly loads the corresponding structure, destroying the foundation block.
+ * @param {object} villagerData Villager's state object.
+ * @param {object} action Classified action intent (e.g., { intent: "build_house" }).
+ * @param {import("@minecraft/server").Player} player Initiating player.
+ */
+export function handleBuildAction(villagerData, action, player) {
+  // Get the villager entity from the data object
+  const entity = villagerData.entity;
+  // Exit if the entity is invalid (e.g., unloaded or dead)
+  if (!entity || !entity.isValid) {
+    log("[Build] handleBuildAction stopped: Entity invalid.");
+    return;
+  }
+
+  // Mark the villager as busy during search and build process
+  villagerData.busy = true;
+  const formattedName = entity.nameTag;
+  const dimension = entity.dimension;
+  log(`[Build] Instant build action started for ${formattedName}.`);
+
+  // Find the specific build configuration based on the matched intent name
+  const buildConfig = actionDetails.build.find(
+    (b) => b.intent_name === action.intent
+  );
+
+  // If no config found for this specific build action
+  if (!buildConfig) {
+    log(`[Build] Config not found for intent '${action.intent}'.`);
+    player.sendMessage({
+      translate: "action_build_fail_config",
+      with: [formattedName],
+    });
+    villagerData.busy = false; // Free the villager
+    return;
+  }
+
+  log(
+    `[Build] ${formattedName} searching for ${buildConfig.foundation_block} within ${VILLAGER_SEARCH_RADIUS} blocks.`
+  );
+
+  let closestClearFoundation = null; // Stores {x, y, z} of the best location
+  let minDistanceSq = Infinity; // Tracks the squared distance to the closest
+  let foundAnyFoundation = false; // Tracks if any matching foundation was found
+
+  const villagerLoc = entity.location;
+  // Define search boundaries
+  const searchMin = {
+    x: Math.floor(villagerLoc.x - VILLAGER_SEARCH_RADIUS),
+    y: Math.floor(villagerLoc.y - 5),
+    z: Math.floor(villagerLoc.z - VILLAGER_SEARCH_RADIUS),
+  };
+  const searchMax = {
+    x: Math.floor(villagerLoc.x + VILLAGER_SEARCH_RADIUS),
+    y: Math.floor(villagerLoc.y + 5),
+    z: Math.floor(villagerLoc.z + VILLAGER_SEARCH_RADIUS),
+  };
+
+  log(
+    `[Build] Search Bounds: X(${searchMin.x} to ${searchMax.x}), Y(${searchMin.y} to ${searchMax.y}), Z(${searchMin.z} to ${searchMax.z})`
+  );
+
+  // --- Search Loop ---
+  try {
+    log("[Build] Entering search loops...");
+    // Iterate through the defined search volume
+    for (let x = searchMin.x; x <= searchMax.x; x++) {
+      for (let y = searchMin.y; y <= searchMax.y; y++) {
+        for (let z = searchMin.z; z <= searchMax.z; z++) {
+          const blockCoords = { x: x, y: y, z: z };
+          let block = null;
+          try {
+            block = dimension.getBlock(blockCoords);
+          } catch (getBlockError) {
+            continue;
+          } // Ignore errors from unloaded chunks
+
+          // If the block matches the required foundation type
+          if (block?.typeId === buildConfig.foundation_block) {
+            foundAnyFoundation = true;
+            const foundationPos = { x: x, y: y, z: z };
+            // Check the area *above* the foundation block
+            const areaToCheckStart = { x: x, y: y + 1, z: z };
+            // Size to check is the structure height minus the foundation layer itself
+            const areaSize = {
+              x: buildConfig.structure_size.x,
+              y: buildConfig.structure_size.y - 1,
+              z: buildConfig.structure_size.z,
+            };
+
+            // If the area above is clear
+            if (checkAreaClear(dimension, areaToCheckStart, areaSize)) {
+              // Calculate distance from villager to this foundation
+              const foundationCenter = { x: x + 0.5, y: y + 0.5, z: z + 0.5 };
+              const distSq = distanceSquared(villagerLoc, foundationCenter);
+              // If this is the closest clear foundation found so far
+              if (distSq < minDistanceSq) {
+                minDistanceSq = distSq;
+                closestClearFoundation = foundationPos; // Update the best location
+              }
+            }
+          }
+        } // z
+      } // y
+    } // x
+    log("[Build] Finished search loops.");
+  } catch (e) {
+    log(`[Build] MAJOR ERROR during search loop execution: ${e}\n${e.stack}`);
+  }
+
+  // --- Result of Search ---
+  // If a suitable location was found
+  if (closestClearFoundation) {
+    log(
+      `[Build] Found suitable foundation at ${JSON.stringify(
+        closestClearFoundation
+      )}. Proceeding with instant build.`
+    );
+    const structureName = buildConfig.structure_name;
+    // const originalFoundationId = buildConfig.foundation_block; // No longer needed
+    const buildLocation = closestClearFoundation;
+
+    // Use a short timeout to allow messages to send before potential lag from structure load
+    system.runTimeout(() => {
+      try {
+        // Remove the foundation block BEFORE loading the structure
+        dimension.setBlockPermutation(
+          buildLocation,
+          BlockPermutation.resolve("minecraft:air")
+        );
+        log(
+          `[Build] Foundation block at ${buildLocation.x},${buildLocation.y},${buildLocation.z} removed.`
+        );
+
+        // Load the structure INSTANTLY
+        dimension.runCommand(
+          `structure load ${structureName} ${buildLocation.x} ${buildLocation.y} ${buildLocation.z}`
+        );
+        log(
+          `[Build] Structure ${structureName} loaded at ${buildLocation.x},${buildLocation.y},${buildLocation.z}`
+        );
+        // Send success message using native translation
+        player.sendMessage({
+          translate: "build_success",
+          with: [formattedName, structureName],
+        });
+
+        // --- BLOCO DE RESTAURAÇÃO REMOVIDO ---
+        // O comando setblock air destroy também foi removido pois a remoção agora é feita ANTES
+
+        villagerData.busy = false; // Free the villager
+      } catch (e) {
+        // Catch errors during the structure load or block setting
+        log(
+          `[Build] Error during structure load or foundation removal: ${e}\n${e.stack}`
+        );
+        player.sendMessage({
+          translate: "action_build_fail_error",
+          with: [formattedName],
+        });
+        // Attempt to clear the foundation location even on error
+        try {
+          dimension.setBlockPermutation(
+            buildLocation,
+            BlockPermutation.resolve("minecraft:air") // Try setting to air again
+          );
+        } catch {}
+        villagerData.busy = false; // Free the villager
+      }
+    }, 20); // 1-second delay (20 ticks) before executing the build
+  } else {
+    // If no suitable foundation was found
+    log(
+      `[Build] No suitable foundation found. foundAnyFoundation=${foundAnyFoundation}`
+    );
+    if (foundAnyFoundation) {
+      // If foundations were found, but none were clear above
+      player.sendMessage({
+        translate: "action_build_fail_obstructed",
+        with: [formattedName],
+      });
+    } else {
+      // If no foundation blocks of the correct type were found at all
+      player.sendMessage({
+        translate: "action_build_fail_no_foundation",
+        with: [formattedName],
+      });
+    }
+    villagerData.busy = false; // Free the villager
+  }
+}
+
+/**
+ * Checks if a cubic area starting from a location is clear of solid obstructions.
+ * Ignores specific preview/foundation blocks.
+ * @param {import("@minecraft/server").Dimension} dimension The dimension to check in.
+ * @param {import("@minecraft/server").Vector3} startLocation The starting corner (min coords) of the area.
+ * @param {import("@minecraft/server").Vector3} size The size (X, Y, Z) of the area to check.
+ * @returns {boolean} True if the area is clear, false otherwise.
+ */
+export function checkAreaClear(dimension, startLocation, size) {
+  // List of block IDs that should NOT count as obstructions
+  const passablePreviewBlocks = [
+    "mm:green_block_preview",
+    "mm:red_block_preview",
+    "mm:ground_house_placer", // Add any other foundation block IDs here
+    // "mm:barracks_placer",
+  ];
+
+  try {
+    for (let x = 0; x < size.x; x++) {
+      for (let y = 0; y < size.y; y++) {
+        for (let z = 0; z < size.z; z++) {
+          const checkPos = {
+            x: startLocation.x + x,
+            y: startLocation.y + y,
+            z: startLocation.z + z,
+          };
+          const block = dimension.getBlock(checkPos);
+
+          // If the block exists...
+          if (block) {
+            // Check if it's NOT air AND NOT liquid AND NOT one of our passable preview/foundation blocks
+            if (
+              !block.isAir &&
+              !block.isLiquid &&
+              !passablePreviewBlocks.includes(block.typeId)
+            ) {
+              return false; // Obstructed by a solid block
+            }
+          }
+          // If block is undefined (outside world load), treat as obstructed? Or clear? Let's assume clear for now.
+        }
+      }
+    }
+    return true; // Area is clear
+  } catch (e) {
+    log(`[Build Check] Error checking area: ${e}`, undefined);
+    return false; // Assume obstructed on error
+  }
 }
