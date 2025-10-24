@@ -3,7 +3,7 @@
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:villager",
-      "is_spawnable": true,
+      "is_spawnable": false,
       "is_summonable": true
     },
     "components": {
@@ -262,7 +262,6 @@
       "minecraft:behavior.work": { "priority": 4 },
       "minecraft:behavior.work_composter": { "priority": 4 },
 
-     
       "minecraft:behavior.offer_flower": { "priority": 3 },
       "minecraft:flocking": {
         "use_center_of_mass": true,
