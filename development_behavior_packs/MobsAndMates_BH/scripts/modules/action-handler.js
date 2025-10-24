@@ -220,6 +220,10 @@ export function startAction(villagerData, action, player) {
         } catch (e) {}
 
         villagerData.busy = false;
+        player.sendMessage({
+          translate: "action_build_finish", 
+          with: [formattedName, structureName], 
+        });
         log(`[Action] ${formattedName} has finished the task and is now free.`);
       },
       DEBUG ? 100 : chosenTime * 60 * 20
@@ -430,6 +434,16 @@ export function handleBuildAction(villagerData, action, player) {
     system.runTimeout(() => {
       try {
         // Remove the foundation block BEFORE loading the structure
+        player.sendMessage({
+          translate: "action_build_start",
+          with: [
+            formattedName,
+            structureName,
+            String(buildLocation.x),
+            String(buildLocation.y),
+            String(buildLocation.z),
+          ],
+        });
         dimension.setBlockPermutation(
           buildLocation,
           BlockPermutation.resolve("minecraft:air")
@@ -450,9 +464,6 @@ export function handleBuildAction(villagerData, action, player) {
           translate: "build_success",
           with: [formattedName, structureName],
         });
-
-        // --- BLOCO DE RESTAURAÇÃO REMOVIDO ---
-        // O comando setblock air destroy também foi removido pois a remoção agora é feita ANTES
 
         villagerData.busy = false; // Free the villager
       } catch (e) {
