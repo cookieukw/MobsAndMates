@@ -6,6 +6,7 @@
 
 import { world } from "@minecraft/server";
 import { DEBUG, isWarn } from "./config/villager-config";
+export const DYNPROP_PREVIEWS = "mbm:activePlayerPreviews";
 
 /**
  * Custom logger. Sends a message to a player if provided, otherwise logs to console.
@@ -130,3 +131,7 @@ export function distanceSquared(pos1, pos2) {
   const dz = pos2.z - pos1.z;
   return dx * dx + dy * dy + dz * dz;
 }
+
+
+
+
