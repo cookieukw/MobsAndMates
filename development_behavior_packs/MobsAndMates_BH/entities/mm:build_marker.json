@@ -1,0 +1,36 @@
+{
+  "format_version": "1.20.80",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "mm:build_marker",
+      "is_spawnable": true,
+      "is_summonable": true
+    },
+    "components": {
+      "minecraft:type_family": {
+        "family": ["marker", "mobsmates", "build_preview"]
+      },
+
+      "minecraft:persistent": {},
+
+      "minecraft:is_hidden_when_invisible": {},
+
+      "minecraft:collision_box": {
+        "width": 0.0,
+        "height": 0.0
+      },
+
+      "minecraft:damage_sensor": {
+        "triggers": {
+          "cause": "all",
+          "deals_damage": false
+        }
+      },
+
+      "minecraft:physics": {
+        "has_gravity": false,
+        "has_collision": false
+      }
+    }
+  }
+}
