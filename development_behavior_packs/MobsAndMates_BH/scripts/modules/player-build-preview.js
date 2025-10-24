@@ -250,11 +250,11 @@ export function initializePlayerPreviewSystem(world) {
         };
 
         // Clean up the preview blocks (red/green)
-        // Limpa os blocos de preview (vermelho/verde)
+       
         cleanupPreviewBlocks(dimension, foundationLoc, structureSize);
 
         // Kill the marker entity
-        // Mata a entidade marcadora
+  
         marker.kill();
 
         player.sendMessage({ translate: "build_cancelled" });
