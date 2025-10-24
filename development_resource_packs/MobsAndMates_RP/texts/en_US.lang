@@ -23,6 +23,7 @@ villager_cancel_action=<%1> Alright, cancelling.
 villager_confirm_name=<%1> Are you talking to me?
 villager_confirm_no=<%1> Oh, my mistake.
 villager_confirm_timeout=<%1> Hmmm, I guess not.
+villager_cancel_confirmation=<%1> Okay, nevermind then. Let me know if you need something later.
 log_conversation_lock_release=[Convo] Player %1 left, releasing conversation lock.
 
 action_prepare=<%1> Right, getting ready to %2.
@@ -81,3 +82,4 @@ build_cancelled=Construction cancelled. Figures.
 tile.mm:green_block_preview.name=Green Preview Block
 tile.mm:red_block_preview.name=Red Preview Block
 tile.mm:ground_house_placer.name=Ground House Foundation
+

@@ -23,6 +23,7 @@ villager_cancel_action=<%1> Beleza, cancelando então.
 villager_confirm_name=<%1> Você está falando comigo?
 villager_confirm_no=<%1> Ah, foi engano meu.
 villager_confirm_timeout=<%1> Hmmm, acho que não.
+villager_cancel_confirmation=<%1> Certo, deixa pra lá então. Me avisa se precisar de algo depois.
 log_conversation_lock_release=[Convo] Jogador %1 saiu, liberando trava de conversa. 
 
 action_prepare=<%1> Certo, me preparando para %2. 
