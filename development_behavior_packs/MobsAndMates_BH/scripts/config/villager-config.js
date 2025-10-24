@@ -1,13 +1,12 @@
 // config/villager-config.js
-
+import { DEV_MODE } from "../.env.js"
 // --- General Settings ---
-export const DEBUG = true;
+export const DEBUG = !!DEV_MODE;
 export const isWarn = true;
 export const thresholdDistanceFactor = 0.25;
 export const nameMatchThreshold = 0.6;
 export const waitingBoxCoords = { x: 0, y: 319, z: 0 };
-export const STRUCTURE_TEMPLATE_LOCATION = { x: 1, y: 0, z: 1 }; // Ensure loaded
-export const VILLAGER_SEARCH_RADIUS = 16;
+export const VILLAGER_SEARCH_RADIUS = 100;
 
 // --- Action Timings (in minutes) ---
 const short_time = DEBUG ? [0.1] : [5, 8];
@@ -482,7 +481,7 @@ export const actionDetails = {
       intent_name: "build_house", // Corresponds to intent name in villager-actions.js
       foundation_block: "mm:ground_house_placer", // Specific foundation block
       structure_name: "ground_house", // .mcstructure name
-      structure_size: { x: 5, y: 4, z: 5 }, // !! EXACT Size X, Y, Z !!
+      structure_size: { x: 9, y: 7, z: 8 }, // !! EXACT Size X, Y, Z !!
       build_time_per_layer: DEBUG ? 5 : 120, // Seconds per layer
       time_variation_factor: 0.2,
       tool: "minecraft:iron_shovel", // Visual tool
