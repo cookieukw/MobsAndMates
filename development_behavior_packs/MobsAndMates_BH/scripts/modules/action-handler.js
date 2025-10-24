@@ -8,7 +8,7 @@ import {
   EntityComponentTypes,
   BlockPermutation,
 } from "@minecraft/server";
-import { distanceSquared, log, randomFrom } from "../utils";
+import { distanceSquared, log, randomFrom, sendVillagerMessage } from "../utils";
 import {
   actionDetails,
   actionTimes,
@@ -107,7 +107,7 @@ export function startAction(villagerData, action, player) {
   const formattedName = villagerData.entity.nameTag;
   const translationKey = `action_prepare_${actionName}`; // ex: "action_prepare_mine"
 
-  player.sendMessage(t(player, translationKey, formattedName));
+  sendVillagerMessage(t(player, translationKey, formattedName));
   log(
     `[Action] ${formattedName} is starting '${actionName}' for ${chosenTime} minutes.`
   );
@@ -133,7 +133,7 @@ export function startAction(villagerData, action, player) {
       return;
     }
 
-    player.sendMessage(t(player, "action_start", formattedName, chosenTime));
+    sendVillagerMessage(t(player, "action_start", formattedName, chosenTime));
     entity.teleport(waitingBoxCoords);
     entity.addEffect("invisibility", chosenTime * 60 * 20 + 100, {
       showParticles: false,
@@ -173,7 +173,7 @@ export function startAction(villagerData, action, player) {
                 const [x, y, z] = coordsMatch;
                 const structureName = t(player, `structure_${structureToFind}`);
                 const coordsString = `X: ${x}, Y: ${y}, Z: ${z}`;
-                player.sendMessage(
+                sendVillagerMessage(
                   t(
                     player,
                     "explore_report_location_success",
@@ -184,12 +184,12 @@ export function startAction(villagerData, action, player) {
                 );
               }
             } else {
-              player.sendMessage(
+              sendVillagerMessage(
                 t(player, "explore_report_location_fail", formattedName)
               );
             }
           } catch (e) {
-            player.sendMessage(
+            sendVillagerMessage(
               t(player, "explore_report_location_fail", formattedName)
             );
             log(`[Explore] /locate command failed: ${e}`);
@@ -197,7 +197,7 @@ export function startAction(villagerData, action, player) {
         } else {
           const loot = calculateLoot(actionName, chosenTime);
           if (loot.length > 0) {
-            player.sendMessage(
+            sendVillagerMessage(
               t(player, "action_return_success", formattedName, actionName)
             );
             for (const reward of loot) {
@@ -208,7 +208,7 @@ export function startAction(villagerData, action, player) {
               player.dimension.runCommand(`gamerule sendCommandFeedback true`);
             }
           } else {
-            player.sendMessage(t(player, "action_return_fail", formattedName));
+            sendVillagerMessage(t(player, "action_return_fail", formattedName));
           }
         }
 
@@ -220,7 +220,7 @@ export function startAction(villagerData, action, player) {
         } catch (e) {}
 
         villagerData.busy = false;
-        player.sendMessage({
+        sendVillagerMessage({
           translate: "action_build_finish", 
           with: [formattedName, structureName], 
         });
@@ -241,7 +241,7 @@ export function handleRaidAction(villagerData, player) {
   if (!entity || !entity.isValid) return;
 
   villagerData.busy = true;
-  player.sendMessage(
+  sendVillagerMessage(
     `<${entity.nameTag}> Okay, I will defend the area! (Raid logic not yet implemented)`
   );
   log(
@@ -253,7 +253,7 @@ export function handleRaidAction(villagerData, player) {
   // For now, just make the villager free again after a short time.
   system.runTimeout(() => {
     villagerData.busy = false;
-    player.sendMessage(`<${entity.nameTag}> The area is secure for now.`);
+    sendVillagerMessage(`<${entity.nameTag}> The area is secure for now.`);
   }, 200); // 10 seconds
 }
 /**
@@ -270,7 +270,7 @@ export function handleComeHereAction(villagerData, player) {
   villagerData.busy = true;
 
   // Let the player know the command was understood
-  player.sendMessage(t(player, "action_come_here_ack", entity.nameTag));
+  sendVillagerMessage(t(player, "action_come_here_ack", entity.nameTag));
   log(`[Action] ${entity.nameTag} will teleport to ${player.name}.`);
 
   // Use a short timeout to make the teleport feel less instant and more deliberate
@@ -295,7 +295,7 @@ export function handleComeHereAction(villagerData, player) {
       entity.teleport(safeLocation || player.location);
 
       // Let the player know the villager has arrived
-      player.sendMessage(t(player, "action_come_here_done", entity.nameTag));
+      sendVillagerMessage(t(player, "action_come_here_done", entity.nameTag));
 
       // The action is complete, so set the villager to not busy
       villagerData.busy = false;
@@ -337,7 +337,7 @@ export function handleBuildAction(villagerData, action, player) {
   // If no config found for this specific build action
   if (!buildConfig) {
     log(`[Build] Config not found for intent '${action.intent}'.`);
-    player.sendMessage({
+    sendVillagerMessage({
       translate: "action_build_fail_config",
       with: [formattedName],
     });
@@ -434,7 +434,7 @@ export function handleBuildAction(villagerData, action, player) {
     system.runTimeout(() => {
       try {
         // Remove the foundation block BEFORE loading the structure
-        player.sendMessage({
+        sendVillagerMessage({
           translate: "action_build_start",
           with: [
             formattedName,
@@ -460,7 +460,7 @@ export function handleBuildAction(villagerData, action, player) {
           `[Build] Structure ${structureName} loaded at ${buildLocation.x},${buildLocation.y},${buildLocation.z}`
         );
         // Send success message using native translation
-        player.sendMessage({
+        sendVillagerMessage({
           translate: "build_success",
           with: [formattedName, structureName],
         });
@@ -471,7 +471,7 @@ export function handleBuildAction(villagerData, action, player) {
         log(
           `[Build] Error during structure load or foundation removal: ${e}\n${e.stack}`
         );
-        player.sendMessage({
+        sendVillagerMessage({
           translate: "action_build_fail_error",
           with: [formattedName],
         });
@@ -492,13 +492,13 @@ export function handleBuildAction(villagerData, action, player) {
     );
     if (foundAnyFoundation) {
       // If foundations were found, but none were clear above
-      player.sendMessage({
+      sendVillagerMessage({
         translate: "action_build_fail_obstructed",
         with: [formattedName],
       });
     } else {
       // If no foundation blocks of the correct type were found at all
-      player.sendMessage({
+      sendVillagerMessage({
         translate: "action_build_fail_no_foundation",
         with: [formattedName],
       });
