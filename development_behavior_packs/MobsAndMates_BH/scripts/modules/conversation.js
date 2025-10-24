@@ -6,7 +6,7 @@ import { world, system } from "@minecraft/server";
 import { classifyMessage } from "../classifier";
 import { villager_actions_intents } from "../intents/villager-actions";
 import { confirmation_intents } from "../intents/confirmation";
-import { cleanAndTokenize, log } from "../utils";
+import { cleanAndTokenize, log, sendVillagerMessage } from "../utils";
 import {
   thresholdDistanceFactor,
   nameMatchThreshold,
@@ -37,9 +37,9 @@ function handleNameConfirmation(player, villagerData, msg) {
 
   if (conf.status === "matched" && conf.intent === "yes") {
     conversationManager.set(player.id, entity.id);
-    player.sendMessage(t(player, "villager_unclear_intent", entity.nameTag));
+    sendVillagerMessage(t(player, "villager_unclear_intent", entity.nameTag));
   } else {
-    player.sendMessage(t(player, "villager_confirm_no", entity.nameTag));
+    sendVillagerMessage(t(player, "villager_confirm_no", entity.nameTag));
   }
 }
 
@@ -56,12 +56,12 @@ function handleActionConfirmation(player, villagerData, msg) {
   if (conf.status === "matched" && conf.intent === "yes") {
     startAction(villagerData, villagerData.pendingAction.action, player);
   } else if (conf.status === "matched" && conf.intent === "no") {
-    player.sendMessage(
+    sendVillagerMessage(
       t(player, "villager_cancel_action", villagerData.entity.nameTag)
     );
     villagerData.pendingAction = null;
   } else {
-    player.sendMessage(
+    sendVillagerMessage(
       t(player, "villager_unclear_confirmation", villagerData.entity.nameTag)
     );
   }
@@ -118,7 +118,7 @@ function onChatSend(event) {
       if (
         [...conversationManager.values()].includes(potentialTarget.entity.id)
       ) {
-        player.sendMessage(
+        sendVillagerMessage(
           t(player, "villager_busy_other", potentialTarget.entity.nameTag)
         );
         return;
@@ -128,7 +128,7 @@ function onChatSend(event) {
       if (nameMatch.score < 1.0) {
         // It's an APPROXIMATE match. Ask for confirmation.
         potentialTarget.pendingNameConfirmation = player.id;
-        player.sendMessage(
+        sendVillagerMessage(
           t(player, "villager_confirm_name", potentialTarget.entity.nameTag)
         );
 
@@ -139,7 +139,7 @@ function onChatSend(event) {
             potentialTarget.pendingNameConfirmation = null;
             try {
               // Use a try-catch in case the player has logged off.
-              player.sendMessage(
+              sendVillagerMessage(
                 t(
                   player,
                   "villager_confirm_timeout",
@@ -213,7 +213,7 @@ function onChatSend(event) {
     // This only happens on a perfect name match or if already in a locked conversation.
     if (isPerfectMatch || lockedEntityId) {
       conversationManager.set(player.id, entity.id);
-      player.sendMessage(t(player, "villager_unclear_intent", entity.nameTag));
+      sendVillagerMessage(t(player, "villager_unclear_intent", entity.nameTag));
     }
   }
 }
