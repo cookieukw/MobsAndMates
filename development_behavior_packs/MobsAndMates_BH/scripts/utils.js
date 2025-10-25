@@ -91,9 +91,9 @@ export function ensureWaitingBoxTickingArea(world) {
     world
       .getDimension("overworld")
       .runCommand(`tickingarea add 0 319 0 0 319 0 waiting_box true`);
-    log("[System] Waiting Box ticking area ensured.");
+    
   } catch (e) {
-    log("[System] Ticking area 'waiting_box' might already exist.");
+   
   }
 }
 

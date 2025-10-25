@@ -69,23 +69,23 @@ function onPlayerFirstSpawn(event) {
           );
           // Optional: Give them random names immediately?
           // villager.nameTag = `Villager_${Math.floor(Math.random() * 1000)}`;
-          log(
+        /*   log(
             `[InitialSpawn] Spawned villager ${i + 1} for ${
               player.name
             } at ${spawnLoc.x.toFixed(1)}, ${spawnLoc.y.toFixed(
               1
             )}, ${spawnLoc.z.toFixed(1)}`
-          );
+          ); */
         } catch (e) {
-          log(`[InitialSpawn] Error spawning villager ${i + 1}: ${e}`);
+          //log(`[InitialSpawn] Error spawning villager ${i + 1}: ${e}`);
         }
         // Small delay between spawns might be good practice, but often unnecessary
         // system.runTimeout(() => { /* spawn logic */ }, i * 5); // Example: 5 ticks apart
       }
     } else {
-      log(
+      /* log(
         `[InitialSpawn] Player ${player.name} spawned, but already marked as having initial spawn.`
-      );
+      ); */
     }
   }
 }
@@ -95,5 +95,5 @@ function onPlayerFirstSpawn(event) {
  */
 export function initializeInitialSpawnHandler() {
   world.afterEvents.playerSpawn.subscribe(onPlayerFirstSpawn);
-  log("[InitialSpawn] Initial spawn handler initialized.");
+ 
 }

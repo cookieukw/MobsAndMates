@@ -6,11 +6,7 @@ import { world, system, EntityTypes } from "@minecraft/server";
 import { initializeTracker } from "./modules/entity-manager";
 import { initializeConversationHandler } from "./modules/conversation";
 import { initializePlayerPreviewSystem } from "./modules/player-build-preview";
-import {
-  ensureWaitingBoxTickingArea,
-  log,
-  randomColor,
-} from "./utils";
+import { ensureWaitingBoxTickingArea, log, randomColor } from "./utils";
 import { initializeInitialSpawnHandler } from "./modules/initial-spawn-handler";
 import { randomVillagerName } from "./modules/random-name-generator";
 
@@ -20,33 +16,20 @@ initializePlayerPreviewSystem(world);
 ensureWaitingBoxTickingArea(world);
 initializeInitialSpawnHandler();
 
-// --- World Load Event: Set flags AND Name Existing Villagers ---
 world.afterEvents.worldLoad.subscribe(() => {
-  // Log that the addon script has loaded successfully.
-  log("Mobs&Mates addon loaded successfully.");
-
   // --- Part 1: Initial World Spawn Flag ---
   // Check if the one-time world initialization flag has already been set.
   if (world.getDynamicProperty("mm:world_has_initial_spawned") === undefined) {
-    log("First world load detected. Setting initial spawn flag.");
     // If the flag is not set, set it now. This prevents the initial villager spawn logic
     // (triggered by playerSpawn events) from potentially running multiple times across script reloads.
     world.setDynamicProperty("mm:world_has_initial_spawned", true);
-    log("World initial spawn flag set.");
-  } else {
-    // If the flag already exists, log that initialization was previously done.
-    log("World already initialized regarding initial spawn flag.");
   }
 
   // --- Part 2: Name Existing Nameless Villagers ---
   // Use a timeout to ensure most entities have loaded into the world before scanning.
   const initialScanDelay = 100; // Delay in ticks (5 seconds)
-  log(
-    `[Namer] Starting scan for existing unnamed villagers in ${initialScanDelay} ticks...`
-  );
 
   system.runTimeout(() => {
-    log("[Namer] Scanning now...");
     try {
       // Get the overworld dimension. Add loops for other dimensions if needed.
       const overworld = world.getDimension("overworld");
@@ -183,4 +166,4 @@ world.afterEvents.entitySpawn.subscribe((event) => {
     }, 1); // Delay of 1 tick
   }
 });
-console.log("[Mobs&Mates]] Systems loaded. ✅");
+

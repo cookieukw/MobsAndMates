@@ -173,7 +173,6 @@ function getMarkerEntityAt(dimension, location) {
  * Initializes the player preview system.
  */
 export function initializePlayerPreviewSystem(world) {
-  log("[Player Build System] Initializing (Entity-Based)...");
 
   // Initialize the permutations here, inside the initialization function.
   // It's now safe to call the API.
@@ -182,7 +181,6 @@ export function initializePlayerPreviewSystem(world) {
     PREVIEW_RED = BlockPermutation.resolve("mm:red_block_preview");
     AIR = BlockPermutation.resolve("minecraft:air");
 
-    log("[Player Build System] Block permutations resolved.");
   });
 
   // --- Event: Player Places Foundation Block ---
@@ -346,5 +344,5 @@ export function initializePlayerPreviewSystem(world) {
   // --- Start the Update Loop ---
 
   system.runInterval(updatePlayerPreviews, 20); // Check every second (20 ticks)
-  log("[Player Build System] Preview update loop started.");
+ 
 }
