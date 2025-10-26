@@ -8,29 +8,105 @@
     "spawn_egg_villager": {
       "textures": "textures/items/spawn_eggs/spawn_egg_villager"
     },
+
+    "leather_villager_helmet": {
+      "textures": "textures/item/armor/leather_villager_helmet"
+    },
+    "chainmail_villager_helmet": {
+      "textures": "textures/item/armor/chainmail_villager_helmet"
+    },
     "iron_villager_helmet": {
       "textures": "textures/item/armor/iron_villager_helmet"
-    },
-    "cloth_villager_helmet": {
-      "textures": "textures/item/armor/cloth_villager_helmet"
     },
     "gold_villager_helmet": {
       "textures": "textures/item/armor/gold_villager_helmet"
     },
-    "netherite_villager_helmet": {
-      "textures": "textures/item/armor/netherite_villager_helmet"
-    },
-    "chain_villager_helmet": {
-      "textures": "textures/item/armor/chain_villager_helmet"
-    },
     "diamond_villager_helmet": {
       "textures": "textures/item/armor/diamond_villager_helmet"
+    },
+    "netherite_villager_helmet": {
+      "textures": "textures/item/armor/netherite_villager_helmet"
     },
     "turtle_villager_helmet": {
       "textures": "textures/item/armor/turtle_villager_helmet"
     },
     "copper_villager_helmet": {
       "textures": "textures/item/armor/copper_villager_helmet"
+    },
+
+    "leather_villager_chestplate": {
+      "textures": "textures/item/armor/leather_villager_chestplate"
+    },
+    "chainmail_villager_chestplate": {
+      "textures": "textures/item/armor/chainmail_villager_chestplate"
+    },
+    "iron_villager_chestplate": {
+      "textures": "textures/item/armor/iron_villager_chestplate"
+    },
+    "gold_villager_chestplate": {
+      "textures": "textures/item/armor/gold_villager_chestplate"
+    },
+    "diamond_villager_chestplate": {
+      "textures": "textures/item/armor/diamond_villager_chestplate"
+    },
+    "netherite_villager_chestplate": {
+      "textures": "textures/item/armor/netherite_villager_chestplate"
+    },
+    "turtle_villager_chestplate": {
+      "textures": "textures/item/armor/turtle_villager_chestplate"
+    },
+    "copper_villager_chestplate": {
+      "textures": "textures/item/armor/copper_villager_chestplate"
+    },
+
+    "leather_villager_leggings": {
+      "textures": "textures/item/armor/leather_villager_leggings"
+    },
+    "chainmail_villager_leggings": {
+      "textures": "textures/item/armor/chainmail_villager_leggings"
+    },
+    "iron_villager_leggings": {
+      "textures": "textures/item/armor/iron_villager_leggings"
+    },
+    "gold_villager_leggings": {
+      "textures": "textures/item/armor/gold_villager_leggings"
+    },
+    "diamond_villager_leggings": {
+      "textures": "textures/item/armor/diamond_villager_leggings"
+    },
+    "netherite_villager_leggings": {
+      "textures": "textures/item/armor/netherite_villager_leggings"
+    },
+    "turtle_villager_leggings": {
+      "textures": "textures/item/armor/turtle_villager_leggings"
+    },
+    "copper_villager_leggings": {
+      "textures": "textures/item/armor/copper_villager_leggings"
+    },
+
+    "leather_villager_boots": {
+      "textures": "textures/item/armor/leather_villager_boots"
+    },
+    "chainmail_villager_boots": {
+      "textures": "textures/item/armor/chainmail_villager_boots"
+    },
+    "iron_villager_boots": {
+      "textures": "textures/item/armor/iron_villager_boots"
+    },
+    "gold_villager_boots": {
+      "textures": "textures/item/armor/gold_villager_boots"
+    },
+    "diamond_villager_boots": {
+      "textures": "textures/item/armor/diamond_villager_boots"
+    },
+    "netherite_villager_boots": {
+      "textures": "textures/item/armor/netherite_villager_boots"
+    },
+    "turtle_villager_boots": {
+      "textures": "textures/item/armor/turtle_villager_boots"
+    },
+    "copper_villager_boots": {
+      "textures": "textures/item/armor/copper_villager_boots"
     }
   }
 }
