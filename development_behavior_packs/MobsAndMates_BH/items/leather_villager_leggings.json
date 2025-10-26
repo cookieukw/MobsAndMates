@@ -1,0 +1,20 @@
+{
+  "format_version": "1.20.30",
+  "minecraft:item": {
+    "description": {
+      "identifier": "mm:leather_villager_leggings",
+      "category": "Equipment"
+    },
+    "components": {
+      "minecraft:icon": "leather_villager_leggings",
+      "has_variants": true,
+      "minecraft:wearable": {
+        "slot": "slot.armor.leggings"
+      },
+      "minecraft:equipment": {
+        "slot": "legs",
+        "protection": 20
+      }
+    }
+  }
+}

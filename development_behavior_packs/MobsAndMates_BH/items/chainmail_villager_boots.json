@@ -1,0 +1,20 @@
+{
+  "format_version": "1.20.30",
+  "minecraft:item": {
+    "description": {
+      "identifier": "mm:chainmail_villager_boots",
+      "category": "Equipment"
+    },
+    "components": {
+      "minecraft:icon": "chainmail_villager_boots",
+      "has_variants": true,
+      "minecraft:wearable": {
+        "slot": "slot.armor.boots"
+      },
+      "minecraft:equipment": {
+        "slot": "feet",
+        "protection": 20
+      }
+    }
+  }
+}
