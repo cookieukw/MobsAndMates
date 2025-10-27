@@ -1,0 +1,33 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.villager_v2.run_dynamic": {
+      "loop": true,
+      "bones": {
+        "body": {
+          "rotation": [17.5, "math.cos(query.anim_time * 900) * 10.0", 0],
+          "position": [
+            0,
+            "math.abs(math.cos(query.anim_time * 900)) * -1.5 - 0.5",
+            0
+          ]
+        },
+        "head": {
+          "rotation": [-10, "math.cos(query.anim_time * 900) * -7.5", 0]
+        },
+        "leftLeg": {
+          "rotation": ["math.cos(query.anim_time * 900) * 75.0", 0, 0]
+        },
+        "rightLeg": {
+          "rotation": ["math.cos(query.anim_time * 900) * -75.0", 0, 0]
+        },
+        "leftarm": {
+          "rotation": ["math.cos(query.anim_time * 900) * -80.0", 0, -5]
+        },
+        "rightarm": {
+          "rotation": ["math.cos(query.anim_time * 900) * 80.0", 0, 5]
+        }
+      }
+    }
+  }
+}

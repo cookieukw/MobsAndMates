@@ -1,0 +1,19 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.villager_v2.gesture_yes": {
+      "animation_length": 1.5,
+      "bones": {
+        "head": {
+          "rotation": {
+            "0.0": [0, 0, 0],
+            "0.3": [20, 0, 0],
+            "0.7": [-10, 0, 0],
+            "1.1": [15, 0, 0],
+            "1.5": [0, 0, 0]
+          }
+        }
+      }
+    }
+  }
+}
