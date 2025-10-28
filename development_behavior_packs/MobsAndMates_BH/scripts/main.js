@@ -6,17 +6,26 @@ import { world, system, EntityTypes } from "@minecraft/server";
 import { initializeTracker } from "./modules/entity-manager";
 import { initializeConversationHandler } from "./modules/conversation";
 import { initializePlayerPreviewSystem } from "./modules/player-build-preview";
-import { ensureWaitingBoxTickingArea, log, randomColor } from "./utils";
+import { log, randomColor } from "./utils";
 import { initializeInitialSpawnHandler } from "./modules/initial-spawn-handler";
 import { randomVillagerName } from "./modules/random-name-generator";
 
 initializeTracker({ entityType: "minecraft:villager", runInterval: 100 });
 initializeConversationHandler();
 initializePlayerPreviewSystem(world);
-ensureWaitingBoxTickingArea(world);
+
 initializeInitialSpawnHandler();
 
 world.afterEvents.worldLoad.subscribe(() => {
+  try {
+    world
+      .getDimension("overworld")
+      .runCommand(`tickingarea add 0 319 0 0 319 0 waiting_box true`);
+    console.log("secedod");
+  } catch (e) {
+    console.log("deu ruim " + e);
+  }
+
   // --- Part 1: Initial World Spawn Flag ---
   // Check if the one-time world initialization flag has already been set.
   if (world.getDynamicProperty("mm:world_has_initial_spawned") === undefined) {
@@ -166,4 +175,3 @@ world.afterEvents.entitySpawn.subscribe((event) => {
     }, 1); // Delay of 1 tick
   }
 });
-
