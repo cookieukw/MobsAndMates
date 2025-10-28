@@ -8,7 +8,12 @@ import {
   EntityComponentTypes,
   BlockPermutation,
 } from "@minecraft/server";
-import { distanceSquared, log, randomFrom } from "../utils";
+import {
+  distanceSquared,
+  log,
+  randomFrom,
+  sendVillagerMessage,
+} from "../utils";
 import {
   actionDetails,
   actionTimes,
@@ -96,138 +101,211 @@ function findSafeLocation(dimension, startLocation, minDistance, maxDistance) {
  * @param {import("@minecraft/server").Player} player The player who initiated the action.
  */
 export function startAction(villagerData, action, player) {
-  if (!villagerData.entity || !villagerData.entity.isValid) return;
+  const entity = villagerData?.entity;
+  if (!entity || !entity.isValid) {
+    log(
+      `[Action][Error] startAction aborted: Entity ${
+        villagerData?.entity?.id ?? "N/A"
+      } invalid.`
+    );
+    if (villagerData) villagerData.busy = false;
+    return;
+  }
 
-  const villagerId = villagerData.entity.id;
+  const villagerId = entity.id;
   villagerData.busy = true;
 
-  const actionName = action.intent;
-  const details = actionDetails[actionName];
-  const chosenTime = randomFrom(actionTimes[actionName]);
-  const formattedName = villagerData.entity.nameTag;
-  const translationKey = `action_prepare_${actionName}`; // ex: "action_prepare_mine"
+  const actionName = action?.intent;
+  if (!actionName) {
+    log(
+      `[Action][Error] startAction aborted for ${entity.nameTag}: Action intent missing.`
+    );
+    villagerData.busy = false;
+    return;
+  }
 
-  player.sendMessage(t(player, translationKey, formattedName));
+  const details = actionDetails[actionName];
+  const timings = actionTimes[actionName];
+  if (!details || !timings || !Array.isArray(timings) || timings.length === 0) {
+    log(
+      `[Action][Error] Aborted: Config details or timings invalid/missing for action '${actionName}'.`
+    );
+    sendVillagerMessage(player, entity, "error_action_misconfigured", [
+      actionName,
+    ]);
+    villagerData.busy = false;
+    return;
+  }
+
+  const chosenTime = randomFrom(timings);
+  if (chosenTime === undefined || isNaN(chosenTime)) {
+    log(
+      `[Action][Error] Aborted: Invalid chosenTime (${chosenTime}) for action '${actionName}'.`
+    );
+    sendVillagerMessage(player, entity, "error_action_misconfigured", [
+      actionName,
+    ]);
+    villagerData.busy = false;
+    return;
+  }
+
+  const formattedName = entity.nameTag;
   log(
-    `[Action] ${formattedName} is starting '${actionName}' for ${chosenTime} minutes.`
+    `[Action] ${formattedName} starting '${actionName}' for ${chosenTime} mins.`
   );
 
+  // --- Send preparation message specific to action ---
+  sendVillagerMessage(player, entity, `action_prepare_${actionName}`, [
+    formattedName,
+  ]);
+
+  // --- Equip Tool if needed ---
   if (details.tool) {
     try {
-      const equippable = villagerData.entity.getComponent(
-        EntityComponentTypes.Equippable
-      );
-      equippable.setEquipment(
-        EquipmentSlot.Mainhand,
-        new ItemStack(details.tool, 1)
-      );
+      const equippable = entity.getComponent(EntityComponentTypes.Equippable);
+      if (equippable) {
+        equippable.setEquipment(
+          EquipmentSlot.Mainhand,
+          new ItemStack(details.tool, 1)
+        );
+      } else {
+        log(
+          `[Action][Warn] Equippable component not found on ${formattedName}. Cannot equip tool.`
+        );
+      }
     } catch (e) {
-      log(`[Action] Could not equip tool on ${formattedName}.`);
+      log(`[Action][Error] Equipping tool failed for ${formattedName}: ${e}`);
     }
   }
 
+  // --- Go Away Phase ---
   system.runTimeout(() => {
-    const entity = world.getEntity(villagerId);
-    if (!entity || !entity.isValid) {
+    const currentEntity = world.getEntity(villagerId);
+    if (!currentEntity || !currentEntity.isValid) {
+      log(
+        `[Action][Warn] Entity ${villagerId} became invalid during prep time.`
+      );
       villagerData.busy = false;
       return;
     }
 
-    player.sendMessage(t(player, "action_start", formattedName, chosenTime));
-    entity.teleport(waitingBoxCoords);
-    entity.addEffect("invisibility", chosenTime * 60 * 20 + 100, {
+    // Send departure message
+    sendVillagerMessage(player, currentEntity, "action_start", [
+      formattedName,
+      String(chosenTime),
+    ]);
+
+    currentEntity.teleport(waitingBoxCoords);
+    const invisibilityDuration = chosenTime * 60 * 20 + 100;
+    currentEntity.addEffect("invisibility", invisibilityDuration, {
       showParticles: false,
     });
 
-    system.runTimeout(
-      async () => {
-        const returningEntity = world.getEntity(villagerId);
-        if (!returningEntity || !returningEntity.isValid) {
-          villagerData.busy = false;
-          return;
-        }
+    // --- Wait and Return Phase ---
+    const taskDurationTicks = DEBUG ? 100 : chosenTime * 60 * 20;
+    system.runTimeout(() => {
+      const returningEntity = world.getEntity(villagerId);
+      if (!returningEntity || !returningEntity.isValid) {
+        log(`[Action][Error] Entity ${villagerId} became invalid during task.`);
+        villagerData.busy = false;
+        return;
+      }
 
-        const spawnLocation = findSafeLocation(
-          player.dimension,
-          player.location,
-          5,
-          10
-        );
-        returningEntity.teleport(spawnLocation || player.location);
-        returningEntity.removeEffect("invisibility");
+      const currentFormattedName = returningEntity.nameTag;
 
-        if (details.reward_type === "structure_location") {
-          const structureToFind = randomFrom(details.loot_table);
-          log(
-            `[Explore] ${formattedName} is searching for a ${structureToFind}.`
+      // Teleport back safely
+      const spawnLocation = findSafeLocation(
+        player.dimension,
+        player.location,
+        5,
+        10
+      );
+      const finalSpawnLoc = spawnLocation
+        ? { x: spawnLocation.x, y: spawnLocation.y, z: spawnLocation.z }
+        : {
+            x: player.location.x,
+            y: player.location.y + 0.5,
+            z: player.location.z,
+          };
+      returningEntity.teleport(finalSpawnLoc);
+      returningEntity.removeEffect("invisibility");
+
+      // --- Handle results ---
+      if (details.reward_type === "structure_location") {
+        const structureToFind = randomFrom(details.loot_table);
+        try {
+          const result = returningEntity.dimension.runCommand(
+            `locate structure ${structureToFind}`
           );
-
-          try {
-            const result = await player.dimension.runCommand(
-              `locate structure ${structureToFind}`
+          const coordsMatch = result.statusMessage.match(/-?\d+/g);
+          if (coordsMatch && coordsMatch.length >= 3) {
+            const [x, y, z] = coordsMatch;
+            const structureNameKey = `structure_${structureToFind}`;
+            const coordsString = `X: ${x}, Y: ${y}, Z: ${z}`;
+            sendVillagerMessage(
+              player,
+              returningEntity,
+              "explore_report_location_success",
+              [formattedName, structureNameKey, coordsString]
             );
-
-            if (result.successCount > 0) {
-              const coordsMatch = result.statusMessage.match(/-?\d+/g);
-              if (coordsMatch && coordsMatch.length >= 3) {
-                const [x, y, z] = coordsMatch;
-                const structureName = t(player, `structure_${structureToFind}`);
-                const coordsString = `X: ${x}, Y: ${y}, Z: ${z}`;
-                player.sendMessage(
-                  t(
-                    player,
-                    "explore_report_location_success",
-                    formattedName,
-                    structureName,
-                    coordsString
-                  )
-                );
-              }
-            } else {
-              player.sendMessage(
-                t(player, "explore_report_location_fail", formattedName)
-              );
-            }
-          } catch (e) {
-            player.sendMessage(
-              t(player, "explore_report_location_fail", formattedName)
+          } else {
+            sendVillagerMessage(
+              player,
+              returningEntity,
+              "explore_report_location_fail",
+              [formattedName]
             );
-            log(`[Explore] /locate command failed: ${e}`);
           }
-        } else {
-          const loot = calculateLoot(actionName, chosenTime);
-          if (loot.length > 0) {
-            player.sendMessage(
-              t(player, "action_return_success", formattedName, actionName)
-            );
+        } catch (e) {
+          sendVillagerMessage(
+            player,
+            returningEntity,
+            "explore_report_location_fail",
+            [formattedName]
+          );
+          log(`[Action][Error] /locate command failed: ${e}`);
+        }
+      } else {
+        const loot = calculateLoot(actionName, chosenTime);
+        if (loot.length > 0) {
+          sendVillagerMessage(
+            player,
+            returningEntity,
+            `action_return_success_${actionName}`,
+            [formattedName]
+          );
+          try {
+            player.dimension.runCommand(`gamerule sendCommandFeedback false`);
             for (const reward of loot) {
-              player.dimension.runCommand(`gamerule sendCommandFeedback false`);
               player.dimension.runCommand(
                 `give "${player.name}" ${reward.item} ${reward.quantity}`
               );
-              player.dimension.runCommand(`gamerule sendCommandFeedback true`);
             }
-          } else {
-            player.sendMessage(t(player, "action_return_fail", formattedName));
+            player.dimension.runCommand(`gamerule sendCommandFeedback true`);
+          } catch (giveError) {
+            log(`[Action][Error] Giving items failed: ${giveError}`);
           }
+        } else {
+          sendVillagerMessage(player, returningEntity, "action_return_fail", [
+            formattedName,
+          ]);
         }
+      }
 
-        try {
-          const equippable = returningEntity.getComponent(
-            EntityComponentTypes.Equippable
-          );
+      // --- Clean up ---
+      try {
+        const equippable = returningEntity.getComponent(
+          EntityComponentTypes.Equippable
+        );
+        if (equippable)
           equippable.setEquipment(EquipmentSlot.Mainhand, undefined);
-        } catch (e) {}
+      } catch (e) {}
 
-        villagerData.busy = false;
-        player.sendMessage({
-          translate: "action_build_finish", 
-          with: [formattedName, structureName], 
-        });
-        log(`[Action] ${formattedName} has finished the task and is now free.`);
-      },
-      DEBUG ? 100 : chosenTime * 60 * 20
-    );
+      villagerData.busy = false;
+      log(
+        `[Action] ${currentFormattedName} (ID: ${villagerId}) finished task and is free.`
+      );
+    }, taskDurationTicks);
   }, 100);
 }
 
