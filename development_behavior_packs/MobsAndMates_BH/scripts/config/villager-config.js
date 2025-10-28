@@ -5,7 +5,7 @@ export const DEBUG = !!DEV_MODE;
 export const isWarn = true;
 export const thresholdDistanceFactor = 0.25;
 export const nameMatchThreshold = 0.6;
-export const waitingBoxCoords = { x: 0, y: 319, z: 0 };
+export const waitingBoxCoords = { x: 0, y: 300, z: 0 };
 export const VILLAGER_SEARCH_RADIUS = 100;
 
 // --- Action Timings (in minutes) ---
