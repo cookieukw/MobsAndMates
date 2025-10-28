@@ -35,23 +35,43 @@ function updateTrackedEntities(entityType) {
 }
 
 /**
- * Finds the closest matching entity name from a list of words.
- * @param {string[]} msgTokens Words from the player's message.
- * @returns {{name: string | null, score: number}} The best match found.
+ * Finds the closest matching FULL entity name within the player's message tokens.
+ * Compares the joined player message against the full stored names.
+ * @param {string[]} msgTokens - Lowercase words from the player's message (e.g., ["finvor", "ironhands", "come", "here"]).
+ * @returns {{name: string | null, score: number}} - The best match found (returns the full lowercase name key).
  */
 export function getClosestEntity(msgTokens) {
-  let best = { name: null, score: 0 };
-  for (const [name] of trackedEntities) {
-    for (const token of msgTokens) {
-      const score = similarity(token, name.toLowerCase());
-      if (score > best.score) {
-        best = { name, score };
-      }
+  let bestMatch = { name: null, score: 0 };
+  // Join the player's tokens back into a single lowercase string for comparison
+  const cleanedPlayerMessage = msgTokens.join(" "); // e.g., "finvor ironhands come here"
+
+  // Iterate through the tracked entities Map
+  // 'villagerNameKey' is the full, lowercase, color-stripped name (e.g., "finvor ironhands")
+  for (const [villagerNameKey, villagerData] of trackedEntities) {
+    // --- Calculate Similarity Score ---
+    // Compare the player's full cleaned message against the villager's full key name
+    const score = similarity(cleanedPlayerMessage, villagerNameKey);
+
+    // --- Smart Check (Optional but Recommended) ---
+    // If the villager's name is found *within* the player's message,
+    // it's a very strong indicator, even if extra words lower the overall score slightly.
+    // We might want to boost the score in this case or use it as a primary check.
+    // For now, we rely purely on the similarity score of the full strings.
+    // if (cleanedPlayerMessage.includes(villagerNameKey)) {
+    //     // Potential score boost? Or different logic?
+    // }
+
+    // --- Update Best Match ---
+    // If the current score is better than the best score found so far...
+    if (score > bestMatch.score) {
+      // Update the best match to this villager's name key and score
+      bestMatch = { name: villagerNameKey, score: score };
     }
   }
-  return best;
-}
 
+  // Return the best match found (can still be null if no names were similar enough)
+  return bestMatch;
+}
 /**
  * Starts the entity tracking system.
  * @param {{entityType: string, runInterval: number}} config
