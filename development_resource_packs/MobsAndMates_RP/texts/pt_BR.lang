@@ -1,76 +1,84 @@
-sim_found_match=Correspondência encontrada!
-sim_closest_phrase=Frase mais próxima
-sim_lev_distance=Distância Levenshtein
-sim_threshold=Limite
-sim_success=Sucesso!
-sim_success_text=A intenção foi classificada corretamente.
-sim_intent_classified=Intenção classificada: %1
+sim_found_match=Achei uma que bate certinho!
+sim_closest_phrase=Mais parecida com: %1
+sim_lev_distance=Distância: %1
+sim_threshold=Limite usado: %1
+sim_success=Deu bom!
+sim_success_text=Classifiquei a intenção certinha.
+sim_intent_classified=Intenção detectada: %1
 sim_ai_response=Resposta da IA: %1
-sim_no_match=Nenhuma correspondência encontrada.
-sim_failure_text=Falha
-sim_comparing=Comparando com todas as intenções...
-sim_confidence=Confiança: %1
-sim_not_recognized=Intenção não reconhecida
-sim_confidence_low=Confiança baixa
-sim_below_threshold=Abaixo do limite
-sim_fallback_response=Não entendi o que você quis dizer.
+sim_no_match=Nada combinou com isso.
+sim_failure_text=Erro na missão
+sim_comparing=Calma aí que tô checando tudo...
+sim_confidence=Confiança no chute: %1
+sim_not_recognized=Nem ideia do que você quis
+sim_confidence_low=Confiança na bad
+sim_below_threshold=Desceu a régua demais
+sim_fallback_response=Hã? Repete isso aí.
 
-villager.registered=[Tracker] Registrado: %1
-villager_busy_other=§c%1 está ocupado conversando com outra pessoa.§r
-villager_unclear_confirmation=<%1> Não entendi se é pra confirmar ou não.
-villager_unclear_intent=<%1> O que exatamente você quer que eu faça?
-villager_cancel_action=<%1> Beleza, cancelando então.
-villager_confirm_name=<%1> Você está falando comigo?
-villager_confirm_no=<%1> Ah, foi engano meu.
-villager_confirm_timeout=<%1> Hmmm, acho que não.
-villager_cancel_confirmation=<%1> Certo, deixa pra lá então. Me avisa se precisar de algo depois.
-log_conversation_lock_release=[Convo] Jogador %1 saiu, liberando trava de conversa. 
+villager.registered=[Tracker] Anotado: %1
+villager_busy_other=§c%1 tá fofocando com outra pessoa.§r
+villager_unclear_confirmation=<%1> Isso aí foi sim ou foi não?
+villager_unclear_intent=<%1> Fala mais claro, qual é a missão?
+villager_cancel_action=<%1> Suave, parei.
+villager_confirm_name=<%1> Tá falando comigo mesmo?
+villager_confirm_no=<%1> Errei feio, ignore.
+villager_confirm_timeout=<%1> Silêncio... então vou nessa.
+villager_cancel_confirmation=<%1> Deixa quieto. Me chama depois se precisar.
+log_conversation_lock_release=[Convo] Player %1 vazou, liberei o papo.
 
-action_prepare=<%1> Certo, me preparando para %2. 
-action_start=<%1> Estou de saída! Volto em cerca de %2 minutos. 
-action_return_fail=<%1> Não consegui encontrar nada de útil desta vez... 
+action_prepare=<%1> Tô me arrumando pra %2, respira.
+action_start=<%1> Fui nessa! Uns %2 minutinhos e volto.
+action_return_fail=<%1> Bati perna à toa... não rolou nada útil.
 
-action_return_success=<%1> Terminei de %2! Trouxe algumas coisas para você.
-action_return_success_mine=<%1> Terminei de minerar! Trouxe umas pedras para você. 
-action_return_success_hunt=<%1> Terminei a caçada! Veja o que consegui. 
-action_return_success_farm=<%1> Colheita feita! Trouxe o que plantei. 
-action_return_success_gather=<%1> Terminei de coletar! Juntei uns materiais.
-action_return_success_fish=<%1> Pesca finalizada! Veja se serve. 
-action_return_success_smelt=<%1> Terminei de esquentar as coisas! Pegue os lingotes. 
-action_return_success_alchemy=<%1> As poções estão... prontas? Trouxe uns ingredientes. 
-action_return_success_craft=<%1> Terminei de fabricar! Fiz umas coisinhas. 
+action_prepare_mine=<%1> Pegando a picareta, bora virar tatu.
+action_prepare_hunt=<%1> Caçar uns pixel bicho, partiu!
+action_prepare_farm=<%1> Vou botar essa plantação no shape.
+action_prepare_gather=<%1> Vou catar tudo por aí, até tampa de garrafa.
+action_prepare_fish=<%1> Vara na mão, peixe na mira.
+action_prepare_smelt=<%1> Hora de derreter pedra e fingir que é mágica.
+action_prepare_alchemy=<%1> Laboratório do vilager tá on. Poções vindo aí.
+action_prepare_craft=<%1> Vou virar artesão por um tempo.
+action_prepare_protect=<%1> Modo segurança ativado, sem gracinha.
+action_prepare_explore=<%1> Curioso demais. Vou ver o que tem no mundão.
 
+action_return_success=<%1> Terminei %2 e ainda trouxe loot. Respeita.
+action_return_success_mine=<%1> Mineração concluída! Trouxe coisa boa.
+action_return_success_hunt=<%1> A caçada foi linda! Dá uma olhada no bagulho.
+action_return_success_farm=<%1> Fazendinha tá show. Peguei uns itens pra tu.
+action_return_success_gather=<%1> Peguei um monte de treco aleatório. Serve?
+action_return_success_fish=<%1> Peixarada capturada. Sashimi? Não sei fazer.
+action_return_success_smelt=<%1> Tudo derretidinho. Só ouro... e outras paradas.
+action_return_success_alchemy=<%1> Poções prontas! Só não explode nada.
+action_return_success_craft=<%1> Itens fresquinhos, direto da bancada.
+action_return_success_protect=<%1> Área limpa, ninguém aprontando. Tá safe.
 
-action_come_here_ack=<%1> Estou a caminho! 
-action_come_here_done=<%1> Cheguei. O que precisa? 
-action_prepare_explore=<%1> Certo, me preparando para explorar. 
-explore_report_location_success=<%1> Eu encontrei um(a) %2! Fica nas coordenadas: %3 
-explore_report_location_fail=<%1> Eu explorei por um bom tempo, mas não encontrei nenhuma estrutura nova por perto. 
+action_come_here_ack=<%1> Tô indo. Não surta.
+action_come_here_done=<%1> Cheguei. E agora?
 
-structure_village=Vila
-structure_pillager_outpost=Posto Avançado de Saqueadores
+explore_report_location_success=<%1> Encontrei um(a) %2! Coord: %3. Cola lá!
+explore_report_location_fail=<%1> Andei horrores e nada de estrutura... tristeza.
+
+structure_village=Aldeia
+structure_pillager_outpost=Base dos Saqueadores
 structure_desert_pyramid=Pirâmide do Deserto
 structure_jungle_temple=Templo da Selva
-structure_ruined_portal=Portal em Ruínas
-structure_shipwreck=Navio Naufragado
-structure_mineshaft=Mina Abandonada
-structure_mansion=Mansão da Floresta
-structure_stronghold=Fortaleza
+structure_ruined_portal=Portal Queimado
+structure_shipwreck=Naufrágio
+structure_mineshaft=Mina Perdida
+structure_mansion=Mansão Sombria
+structure_stronghold=Fortaleza Sinistra
 
+action_build_start=<%1> Tá, vou construir teu %2 lá em %3, %4, %5. Sem pressa, patrão.
+action_build_finish=<%1> Terminei isso aí. Próxima missão?
+action_build_fail_obstructed=<%1> Tá tudo entupido aqui. Arruma esse caos primeiro.
+action_build_fail_no_foundation=<%1> Falta fundação, chefia! Não faço milagre.
+action_build_fail_error=<%1> Bugou algo aqui. Vou culpar você e é isso.
+action_build_fail_config=<%1> Construir o quê? Com que cara? Cadê os detalhes?
+action_build_complete_log=[Build] Estrutura '%1' concluída pelo aldeão %2 sem reclamar muito.
 
-action_build_start=<%1> Tá, tá, vou começar a construir essa %2 em %3, %4, %5. Não me apressa! 
-action_build_finish=<%1> Terminei a %2. Que mais você quer? Aff...
-action_build_fail_obstructed=<%1> Não consigo construir aqui, a área não está livre! 
-action_build_fail_no_foundation=<%1> Não encontrei nenhum bloco de fundação por perto para construir. 
-action_build_fail_error=<%1> Aff, deu alguma M aqui. Provavelmente culpa sua. Tenta de novo, sei lá. 
-action_build_fail_config=<%1> Construir *o quê*? De que tamanho? Não me passaram as instruções pra isso! 
-action_build_complete_log=[Build] Estrutura '%1' completada a contragosto pelo aldeão %2. 
-
-build_success=Construção completa! Sua %2 está pronta. 
-
-build_cancelled=Construção cancelada. Tinha que ser.
-
+build_success=Construção entregue! Aí está seu %2 bonitão.
+build_cancelled=Construção cancelada. Nada novo no front.
 
 tile.mm:green_block_preview.name=Bloco de Prévia Verde
 tile.mm:red_block_preview.name=Bloco de Prévia Vermelho
-tile.mm:ground_house_placer.name=Fundação da Casa de Terra
+tile.mm:ground_house_placer.name=Fundação de Casa
