@@ -82,21 +82,6 @@ export function randomFrom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-/**
- * Ensures a ticking area exists where entities can wait without being unloaded.
- * @param {import("@minecraft/server").World} world
- */
-export function ensureWaitingBoxTickingArea(world) {
-  try {
-    world
-      .getDimension("overworld")
-      .runCommand(`tickingarea add 0 319 0 0 319 0 waiting_box true`);
-    
-  } catch (e) {
-   
-  }
-}
-
 export const levenshtein = (a, b) => {
   if (a.length === 0) return b.length;
   if (b.length === 0) return a.length;
