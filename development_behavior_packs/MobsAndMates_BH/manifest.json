@@ -4,7 +4,7 @@
     "name": "Mobs & Mates BH",
     "description": "Never feel alone again! Spawn with your own villagers who build, interact, and form bonds with you in a dynamic, living village.",
     "uuid": "8716a91b-7dd1-44b1-90f7-052f6068dcc6",
-    "version": [1, 1, 0],
+    "version": [1, 2, 0],
     "min_engine_version": [1, 20, 0]
   },
   "modules": [
@@ -27,7 +27,7 @@
     },
     {
       "uuid": "88163f29-7378-49d8-b5a2-031e11067498",
-      "version": [1, 1, 0]
+      "version": [1, 2, 0]
     }
   ]
 }
