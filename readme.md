@@ -24,7 +24,8 @@ Say their name in chat.
 
 ```
 
-> Ruan <Ruan> What do you want me to do?
+> Ruan 
+<Ruan> What do you want me to do?
 
 ```
 
@@ -32,8 +33,10 @@ Misspell? No problem — they’ll ask if you meant them.
 
 ```
 
-> Runn <Ruan> Are you talking to me?
-> yes <Ruan> What do you want me to do?
+> Runn 
+<Ruan> Are you talking to me?
+> yes
+<Ruan> What do you want me to do?
 
 ```
 
@@ -42,8 +45,10 @@ Once focused, just say what to do.
 
 ```
 
-> Ruan <Ruan> What do you want me to do?
-> go fishing <Ruan> Alright, getting ready to fish.
+> Ruan 
+<Ruan> What do you want me to do?
+> go fishing 
+<Ruan> Alright, getting ready to fish.
 
 ````
 
